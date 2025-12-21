@@ -1,0 +1,95 @@
+{
+    "name": "VanteTegner",
+    "short_name": "VanteTegner",
+    "description": "Design traditional Norwegian Selbu mitten knitting patterns",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#f5f5f0",
+    "theme_color": "#2c5545",
+    "orientation": "any",
+    "scope": "/",
+    "lang": "da",
+    "categories": ["lifestyle", "utilities"],
+    "icons": [
+        {
+            "src": "icons/icon-72.png",
+            "sizes": "72x72",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "icons/icon-96.png",
+            "sizes": "96x96",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "icons/icon-128.png",
+            "sizes": "128x128",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "icons/icon-144.png",
+            "sizes": "144x144",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "icons/icon-152.png",
+            "sizes": "152x152",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "icons/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "icons/icon-384.png",
+            "sizes": "384x384",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "icons/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Nytt mønster",
+            "short_name": "Nytt",
+            "description": "Start et nytt tomt mønster",
+            "url": "/?new=true",
+            "icons": [
+                {
+                    "src": "icons/new-pattern.png",
+                    "sizes": "96x96"
+                }
+            ]
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "screenshots/desktop.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "VanteTegner på desktop"
+        },
+        {
+            "src": "screenshots/mobile.png",
+            "sizes": "750x1334",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "VanteTegner på mobil"
+        }
+    ],
+    "related_applications": [],
+    "prefer_related_applications": false
+}

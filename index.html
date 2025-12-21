@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Design traditionelle norske Selbu vante strikke mønstre">
+    <meta name="theme-color" content="#2c5545">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="VanteTegner">
+    
+    <title>VanteTegner - Selbu Vante Designer</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧤</text></svg>">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <button id="menuToggle" class="icon-btn" aria-label="Menu">
+                    <svg viewBox="0 0 24 24" width="24" height="24">
+                        <path fill="currentColor" d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </button>
+                <h1>VanteTegner</h1>
+            </div>
+            <div class="header-right">
+                <button id="undoBtn" class="icon-btn" aria-label="Fortryd" title="Fortryd (Ctrl+Z)">
+                    <svg viewBox="0 0 24 24" width="24" height="24">
+                        <path fill="currentColor" d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/>
+                    </svg>
+                </button>
+                <button id="redoBtn" class="icon-btn" aria-label="Annuller fortryd" title="Annuller fortryd (Ctrl+Y)">
+                    <svg viewBox="0 0 24 24" width="24" height="24">
+                        <path fill="currentColor" d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 16h9V7l-3.6 3.6z"/>
+                    </svg>
+                </button>
+                <button id="saveBtn" class="icon-btn" aria-label="Gem" title="Gem (Ctrl+S)">
+                    <svg viewBox="0 0 24 24" width="24" height="24">
+                        <path fill="currentColor" d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Side Panel -->
+            <aside id="sidePanel" class="side-panel">
+                <div class="panel-section">
+                    <h3>Størrelse</h3>
+                    <div class="size-selector">
+                        <button class="size-btn" data-size="small">S (44m)</button>
+                        <button class="size-btn active" data-size="medium">M (48m)</button>
+                        <button class="size-btn" data-size="large">L (52m)</button>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3>Farvepalette</h3>
+                    <div class="color-palette">
+                        <button class="color-btn active" data-color="natural" style="background-color: #F5F5DC;" title="Naturhvid (W)">
+                            <span class="color-label">Naturhvid</span>
+                        </button>
+                        <button class="color-btn" data-color="darkgray" style="background-color: #2F4F4F;" title="Mørkegrå (G)">
+                            <span class="color-label">Mørkegrå</span>
+                        </button>
+                        <button class="color-btn" data-color="accent1" style="background-color: #8B0000;" title="Farve 1 (R)">
+                            <span class="color-label">Farve 1</span>
+                        </button>
+                        <button class="color-btn" data-color="accent2" style="background-color: #1E4D6B;" title="Farve 2 (B)">
+                            <span class="color-label">Farve 2</span>
+                        </button>
+                    </div>
+                    <div class="custom-colors">
+                        <label>
+                            <span>Farve 1:</span>
+                            <input type="color" id="customColor1" value="#8B0000">
+                        </label>
+                        <label>
+                            <span>Farve 2:</span>
+                            <input type="color" id="customColor2" value="#1E4D6B">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3>Værktøj</h3>
+                    <div class="tools-grid">
+                        <button class="tool-btn active" data-tool="pencil" title="Blyant (P)">
+                            <svg viewBox="0 0 24 24" width="20" height="20">
+                                <path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                            </svg>
+                            <span>Blyant</span>
+                        </button>
+                        <button class="tool-btn" data-tool="eraser" title="Viskelæder (E)">
+                            <svg viewBox="0 0 24 24" width="20" height="20">
+                                <path fill="currentColor" d="M16.24 3.56l4.95 4.94c.78.79.78 2.05 0 2.84L12 20.53a4.008 4.008 0 0 1-5.66 0L2.81 17c-.78-.79-.78-2.05 0-2.84l10.6-10.6c.79-.78 2.05-.78 2.83 0zm-1.41 1.42L6.93 12.9l3.54 3.54 7.9-7.9-3.54-3.56z"/>
+                            </svg>
+                            <span>Viskelæder</span>
+                        </button>
+                        <button class="tool-btn" data-tool="fill" title="Fyld (F)">
+                            <svg viewBox="0 0 24 24" width="20" height="20">
+                                <path fill="currentColor" d="M16.56 8.94L7.62 0 6.21 1.41l2.38 2.38-5.15 5.15c-.59.59-.59 1.54 0 2.12l5.5 5.5c.29.29.68.44 1.06.44s.77-.15 1.06-.44l5.5-5.5c.59-.58.59-1.53 0-2.12zM5.21 10L10 5.21 14.79 10H5.21zM19 11.5s-2 2.17-2 3.5c0 1.1.9 2 2 2s2-.9 2-2c0-1.33-2-3.5-2-3.5z"/>
+                            </svg>
+                            <span>Fyld</span>
+                        </button>
+                        <button class="tool-btn" data-tool="mirror" title="Spejl (M)">
+                            <svg viewBox="0 0 24 24" width="20" height="20">
+                                <path fill="currentColor" d="M15 21h2v-2h-2v2zm4-12h2V7h-2v2zM3 5v14c0 1.1.9 2 2 2h4v-2H5V5h4V3H5c-1.1 0-2 .9-2 2zm16-2v2h2c0-1.1-.9-2-2-2zm-8 20h2V1h-2v22zm8-6h2v-2h-2v2zM15 5h2V3h-2v2zm4 8h2v-2h-2v2zm0 8c1.1 0 2-.9 2-2h-2v2z"/>
+                            </svg>
+                            <span>Spejl</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3>Visning</h3>
+                    <div class="view-controls">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="showGrid" checked>
+                            <span>Vis gitter</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="showMirror">
+                            <span>Vis spejlbillede</span>
+                        </label>
+                        <div class="zoom-controls">
+                            <button id="zoomOut" class="zoom-btn">−</button>
+                            <span id="zoomLevel">100%</span>
+                            <button id="zoomIn" class="zoom-btn">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3>Mønster</h3>
+                    <div class="pattern-actions">
+                        <button id="clearCanvas" class="action-btn danger">
+                            <svg viewBox="0 0 24 24" width="16" height="16">
+                                <path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                            </svg>
+                            Ryd alt
+                        </button>
+                        <button id="exportPng" class="action-btn">
+                            <svg viewBox="0 0 24 24" width="16" height="16">
+                                <path fill="currentColor" d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                            </svg>
+                            Eksporter PNG
+                        </button>
+                        <button id="loadPattern" class="action-btn">
+                            <svg viewBox="0 0 24 24" width="16" height="16">
+                                <path fill="currentColor" d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/>
+                            </svg>
+                            Indlæs mønster
+                        </button>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3>Gemte mønstre</h3>
+                    <div id="patternLibrary" class="pattern-library">
+                        <p class="empty-state">Ingen gemte mønstre</p>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Canvas Container -->
+            <div class="canvas-container">
+                <div class="canvas-wrapper" id="canvasWrapper">
+                    <canvas id="mainCanvas"></canvas>
+                    <canvas id="previewCanvas" class="preview-canvas"></canvas>
+                </div>
+                
+                <!-- Section Labels -->
+                <div class="section-labels" id="sectionLabels">
+                    <div class="section-label" data-section="m1">M.1</div>
+                    <div class="section-label" data-section="m2">M.2</div>
+                    <div class="section-label" data-section="m3">M.3</div>
+                    <div class="section-label" data-section="m4">M.4</div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom Toolbar (Mobile) -->
+        <nav class="bottom-toolbar">
+            <button class="toolbar-btn" data-color="natural" style="--btn-color: #F5F5DC;">
+                <span class="color-dot"></span>
+            </button>
+            <button class="toolbar-btn" data-color="darkgray" style="--btn-color: #2F4F4F;">
+                <span class="color-dot"></span>
+            </button>
+            <button class="toolbar-btn" data-color="accent1" style="--btn-color: #8B0000;">
+                <span class="color-dot"></span>
+            </button>
+            <button class="toolbar-btn" data-color="accent2" style="--btn-color: #1E4D6B;">
+                <span class="color-dot"></span>
+            </button>
+            <button class="toolbar-btn tool" data-tool="eraser">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                    <path fill="currentColor" d="M16.24 3.56l4.95 4.94c.78.79.78 2.05 0 2.84L12 20.53a4.008 4.008 0 0 1-5.66 0L2.81 17c-.78-.79-.78-2.05 0-2.84l10.6-10.6c.79-.78 2.05-.78 2.83 0z"/>
+                </svg>
+            </button>
+        </nav>
+
+        <!-- Save Dialog -->
+        <dialog id="saveDialog" class="modal" onclick="if(event.target===this)this.close()">
+            <div class="modal-content">
+                <h2>Gem mønster</h2>
+                <form id="saveForm">
+                    <label>
+                        Navn:
+                        <input type="text" id="patternName" required placeholder="Mit Selbu mønster">
+                    </label>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary" id="cancelSave" onclick="document.getElementById('saveDialog').close()">Annuller</button>
+                        <button type="submit" class="btn-primary">Gem</button>
+                    </div>
+                </form>
+            </div>
+        </dialog>
+
+        <!-- Load Dialog -->
+        <dialog id="loadDialog" class="modal" onclick="if(event.target===this)this.close()">
+            <div class="modal-content">
+                <h2>Indlæs mønster</h2>
+                <div id="loadPatternList" class="pattern-list">
+                    <p class="empty-state">Ingen gemte mønstre</p>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" id="cancelLoad" onclick="document.getElementById('loadDialog').close()">Luk</button>
+                </div>
+            </div>
+        </dialog>
+
+        <!-- Toast Notifications -->
+        <div id="toastContainer" class="toast-container"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="canvas-drawing.js"></script>
+    <script src="pattern-manager.js"></script>
+    <script src="app.js"></script>
+    
+    <!-- Close any open dialogs on load and add escape key support -->
+    <script>
+        // Close dialogs on page load (in case they're stuck)
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('dialog').forEach(d => d.close());
+        });
+        
+        // Close dialog on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('dialog[open]').forEach(d => d.close());
+            }
+        });
+    </script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('SW registrert:', reg.scope))
+                    .catch(err => console.log('SW feil:', err));
+            });
+        }
+    </script>
+</body>
+</html>
