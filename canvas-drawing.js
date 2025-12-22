@@ -111,19 +111,10 @@ class CanvasDrawing {
      */
     getChildMittenData() {
         return {
-            // Main mitten body measurements
-            mainWidth: 22,
-            mainHeight: 58,
+            mainWidth: 26,
+            mainHeight: 62,
             mainTop: 5,
-            
-            // Thumb measurements
-            thumbWidth: 10,
-            thumbHeight: 20,
-            thumbTop: 28,
-            thumbOffset: 2,  // Distance from edge
-            
-            // Fingertip shape
-            peakHeight: 8
+            numPeaks: 5  // Number of zigzag peaks at top
         };
     }
     
@@ -132,16 +123,10 @@ class CanvasDrawing {
      */
     getWomenMittenData() {
         return {
-            mainWidth: 26,
-            mainHeight: 70,
+            mainWidth: 30,
+            mainHeight: 75,
             mainTop: 5,
-            
-            thumbWidth: 12,
-            thumbHeight: 24,
-            thumbTop: 32,
-            thumbOffset: 2,
-            
-            peakHeight: 10
+            numPeaks: 6
         };
     }
     
@@ -150,174 +135,105 @@ class CanvasDrawing {
      */
     getMenMittenData() {
         return {
-            mainWidth: 30,
-            mainHeight: 78,
+            mainWidth: 34,
+            mainHeight: 85,
             mainTop: 5,
-            
-            thumbWidth: 14,
-            thumbHeight: 28,
-            thumbTop: 36,
-            thumbOffset: 2,
-            
-            peakHeight: 12
+            numPeaks: 7
         };
     }
     
     /**
-     * Create left mitten outline (thumb on LEFT side)
-     * This is the mitten you draw on
+     * Create left mitten outline - simplified hand shape with zigzag top
+     * Symmetrical peaks at 45 degrees
      */
     createLeftMittenOutline(data, startX) {
         const lines = [];
-        const markers = [];
         
-        const thumbLeft = startX + data.thumbOffset;
-        const thumbRight = thumbLeft + data.thumbWidth;
-        const thumbBottom = data.thumbTop + data.thumbHeight;
-        const thumbTop = data.thumbTop;
-        
-        // === THUMB (left side of left mitten) ===
-        // Left edge of thumb
-        lines.push({ x1: thumbLeft, y1: thumbBottom, x2: thumbLeft, y2: thumbTop + 6 });
-        
-        // Thumb top zigzag (W shape)
-        const thumbMid = thumbLeft + data.thumbWidth / 2;
-        lines.push({ x1: thumbLeft, y1: thumbTop + 6, x2: thumbLeft + 2, y2: thumbTop + 4 });
-        lines.push({ x1: thumbLeft + 2, y1: thumbTop + 4, x2: thumbLeft + 4, y2: thumbTop + 2 });
-        lines.push({ x1: thumbLeft + 4, y1: thumbTop + 2, x2: thumbMid, y2: thumbTop });
-        lines.push({ x1: thumbMid, y1: thumbTop, x2: thumbRight - 4, y2: thumbTop + 2 });
-        lines.push({ x1: thumbRight - 4, y1: thumbTop + 2, x2: thumbRight - 2, y2: thumbTop + 4 });
-        lines.push({ x1: thumbRight - 2, y1: thumbTop + 4, x2: thumbRight, y2: thumbTop + 6 });
-        
-        // Right edge of thumb
-        lines.push({ x1: thumbRight, y1: thumbTop + 6, x2: thumbRight, y2: thumbBottom });
-        
-        // Thumb bottom
-        lines.push({ x1: thumbRight, y1: thumbBottom, x2: thumbLeft, y2: thumbBottom });
-        
-        // === MAIN MITTEN BODY ===
-        const mainLeft = thumbRight + 2;
+        const mainLeft = startX + 2;
         const mainRight = mainLeft + data.mainWidth;
         const mainBottom = data.mainTop + data.mainHeight;
         const mainTop = data.mainTop;
-        const midX = (mainLeft + mainRight) / 2;
-        const peakH = data.peakHeight;
         
-        // Left edge
-        lines.push({ x1: mainLeft, y1: mainBottom, x2: mainLeft, y2: mainTop + peakH });
+        // Calculate peak spacing for symmetry
+        const peakWidth = data.mainWidth / data.numPeaks;
+        const peakHeight = peakWidth;  // 45 degree angle
         
-        // Fingertip zigzag (2 peaks with valley)
-        // Left peak
-        lines.push({ x1: mainLeft, y1: mainTop + peakH, x2: mainLeft + 3, y2: mainTop + peakH - 3 });
-        lines.push({ x1: mainLeft + 3, y1: mainTop + peakH - 3, x2: mainLeft + 6, y2: mainTop + 2 });
-        lines.push({ x1: mainLeft + 6, y1: mainTop + 2, x2: mainLeft + 9, y2: mainTop });
-        // Valley
-        lines.push({ x1: mainLeft + 9, y1: mainTop, x2: midX - 2, y2: mainTop + 3 });
-        lines.push({ x1: midX - 2, y1: mainTop + 3, x2: midX + 2, y2: mainTop + 3 });
-        lines.push({ x1: midX + 2, y1: mainTop + 3, x2: mainRight - 9, y2: mainTop });
-        // Right peak
-        lines.push({ x1: mainRight - 9, y1: mainTop, x2: mainRight - 6, y2: mainTop + 2 });
-        lines.push({ x1: mainRight - 6, y1: mainTop + 2, x2: mainRight - 3, y2: mainTop + peakH - 3 });
-        lines.push({ x1: mainRight - 3, y1: mainTop + peakH - 3, x2: mainRight, y2: mainTop + peakH });
+        // Left edge (from bottom up to first peak base)
+        lines.push({ x1: mainLeft, y1: mainBottom, x2: mainLeft, y2: mainTop + peakHeight });
         
-        // Right edge
-        lines.push({ x1: mainRight, y1: mainTop + peakH, x2: mainRight, y2: mainBottom });
+        // Create symmetrical zigzag peaks at top
+        let currentX = mainLeft;
+        let currentY = mainTop + peakHeight;
+        
+        for (let i = 0; i < data.numPeaks; i++) {
+            const peakX = currentX + peakWidth / 2;
+            const peakY = mainTop;
+            const nextX = currentX + peakWidth;
+            const nextY = mainTop + peakHeight;
+            
+            // Up to peak (45 degrees)
+            lines.push({ x1: currentX, y1: currentY, x2: peakX, y2: peakY });
+            // Down from peak (45 degrees)
+            lines.push({ x1: peakX, y1: peakY, x2: nextX, y2: nextY });
+            
+            currentX = nextX;
+            currentY = nextY;
+        }
+        
+        // Right edge (from last peak base down to bottom)
+        lines.push({ x1: mainRight, y1: mainTop + peakHeight, x2: mainRight, y2: mainBottom });
         
         // Bottom edge
         lines.push({ x1: mainRight, y1: mainBottom, x2: mainLeft, y2: mainBottom });
         
-        // === THUMB GUSSET INSIDE MAIN MITTEN ===
-        const gussetTop = data.thumbTop + 8;
-        const gussetBottom = thumbBottom + 2;
-        const gussetWidth = 8;
-        lines.push({ x1: mainLeft + gussetWidth, y1: gussetTop, x2: mainLeft, y2: gussetBottom });
-        lines.push({ x1: mainLeft, y1: gussetBottom, x2: mainLeft + gussetWidth, y2: gussetBottom });
-        lines.push({ x1: mainLeft + gussetWidth, y1: gussetBottom, x2: mainLeft + gussetWidth, y2: gussetTop });
-        
-        // M marker for gusset
-        markers.push({ x: mainLeft + 4, y: gussetBottom + 3, label: 'M' });
-        
-        return { lines, markers };
+        return { lines, markers: [] };
     }
     
     /**
-     * Create right mitten outline (thumb on RIGHT side - mirrored)
-     * This is the mitten that shows the mirrored pattern
+     * Create right mitten outline - identical to left (mirrored)
+     * Symmetrical peaks at 45 degrees
      */
     createRightMittenOutline(data, startX) {
         const lines = [];
-        const markers = [];
         
-        // For right mitten, everything is mirrored
-        // Main body is on the left, thumb on the right
-        
-        const mainLeft = startX;
+        const mainLeft = startX + 2;
         const mainRight = mainLeft + data.mainWidth;
         const mainBottom = data.mainTop + data.mainHeight;
         const mainTop = data.mainTop;
-        const midX = (mainLeft + mainRight) / 2;
-        const peakH = data.peakHeight;
         
-        // === MAIN MITTEN BODY ===
-        // Left edge
-        lines.push({ x1: mainLeft, y1: mainBottom, x2: mainLeft, y2: mainTop + peakH });
+        // Calculate peak spacing for symmetry
+        const peakWidth = data.mainWidth / data.numPeaks;
+        const peakHeight = peakWidth;  // 45 degree angle
         
-        // Fingertip zigzag (2 peaks with valley)
-        // Left peak
-        lines.push({ x1: mainLeft, y1: mainTop + peakH, x2: mainLeft + 3, y2: mainTop + peakH - 3 });
-        lines.push({ x1: mainLeft + 3, y1: mainTop + peakH - 3, x2: mainLeft + 6, y2: mainTop + 2 });
-        lines.push({ x1: mainLeft + 6, y1: mainTop + 2, x2: mainLeft + 9, y2: mainTop });
-        // Valley
-        lines.push({ x1: mainLeft + 9, y1: mainTop, x2: midX - 2, y2: mainTop + 3 });
-        lines.push({ x1: midX - 2, y1: mainTop + 3, x2: midX + 2, y2: mainTop + 3 });
-        lines.push({ x1: midX + 2, y1: mainTop + 3, x2: mainRight - 9, y2: mainTop });
-        // Right peak
-        lines.push({ x1: mainRight - 9, y1: mainTop, x2: mainRight - 6, y2: mainTop + 2 });
-        lines.push({ x1: mainRight - 6, y1: mainTop + 2, x2: mainRight - 3, y2: mainTop + peakH - 3 });
-        lines.push({ x1: mainRight - 3, y1: mainTop + peakH - 3, x2: mainRight, y2: mainTop + peakH });
+        // Left edge (from bottom up to first peak base)
+        lines.push({ x1: mainLeft, y1: mainBottom, x2: mainLeft, y2: mainTop + peakHeight });
         
-        // Right edge
-        lines.push({ x1: mainRight, y1: mainTop + peakH, x2: mainRight, y2: mainBottom });
+        // Create symmetrical zigzag peaks at top
+        let currentX = mainLeft;
+        let currentY = mainTop + peakHeight;
+        
+        for (let i = 0; i < data.numPeaks; i++) {
+            const peakX = currentX + peakWidth / 2;
+            const peakY = mainTop;
+            const nextX = currentX + peakWidth;
+            const nextY = mainTop + peakHeight;
+            
+            // Up to peak (45 degrees)
+            lines.push({ x1: currentX, y1: currentY, x2: peakX, y2: peakY });
+            // Down from peak (45 degrees)
+            lines.push({ x1: peakX, y1: peakY, x2: nextX, y2: nextY });
+            
+            currentX = nextX;
+            currentY = nextY;
+        }
+        
+        // Right edge (from last peak base down to bottom)
+        lines.push({ x1: mainRight, y1: mainTop + peakHeight, x2: mainRight, y2: mainBottom });
         
         // Bottom edge
         lines.push({ x1: mainRight, y1: mainBottom, x2: mainLeft, y2: mainBottom });
         
-        // === THUMB GUSSET INSIDE MAIN MITTEN (on right side) ===
-        const gussetTop = data.thumbTop + 8;
-        const gussetBottom = data.thumbTop + data.thumbHeight + 2;
-        const gussetWidth = 8;
-        lines.push({ x1: mainRight - gussetWidth, y1: gussetTop, x2: mainRight, y2: gussetBottom });
-        lines.push({ x1: mainRight, y1: gussetBottom, x2: mainRight - gussetWidth, y2: gussetBottom });
-        lines.push({ x1: mainRight - gussetWidth, y1: gussetBottom, x2: mainRight - gussetWidth, y2: gussetTop });
-        
-        // M marker for gusset
-        markers.push({ x: mainRight - 4, y: gussetBottom + 3, label: 'M' });
-        
-        // === THUMB (right side of right mitten) ===
-        const thumbLeft = mainRight + 2;
-        const thumbRight = thumbLeft + data.thumbWidth;
-        const thumbBottom = data.thumbTop + data.thumbHeight;
-        const thumbTop = data.thumbTop;
-        
-        // Left edge of thumb
-        lines.push({ x1: thumbLeft, y1: thumbBottom, x2: thumbLeft, y2: thumbTop + 6 });
-        
-        // Thumb top zigzag (W shape)
-        const thumbMid = thumbLeft + data.thumbWidth / 2;
-        lines.push({ x1: thumbLeft, y1: thumbTop + 6, x2: thumbLeft + 2, y2: thumbTop + 4 });
-        lines.push({ x1: thumbLeft + 2, y1: thumbTop + 4, x2: thumbLeft + 4, y2: thumbTop + 2 });
-        lines.push({ x1: thumbLeft + 4, y1: thumbTop + 2, x2: thumbMid, y2: thumbTop });
-        lines.push({ x1: thumbMid, y1: thumbTop, x2: thumbRight - 4, y2: thumbTop + 2 });
-        lines.push({ x1: thumbRight - 4, y1: thumbTop + 2, x2: thumbRight - 2, y2: thumbTop + 4 });
-        lines.push({ x1: thumbRight - 2, y1: thumbTop + 4, x2: thumbRight, y2: thumbTop + 6 });
-        
-        // Right edge of thumb
-        lines.push({ x1: thumbRight, y1: thumbTop + 6, x2: thumbRight, y2: thumbBottom });
-        
-        // Thumb bottom
-        lines.push({ x1: thumbRight, y1: thumbBottom, x2: thumbLeft, y2: thumbBottom });
-        
-        return { lines, markers };
+        return { lines, markers: [] };
     }
     
     /**
@@ -929,18 +845,6 @@ class CanvasDrawing {
                 ctx.lineTo(line.x2 * cellSize, line.y2 * cellSize);
             });
             ctx.stroke();
-            
-            // Draw markers for left mitten
-            if (this.leftMittenOutline.markers) {
-                ctx.fillStyle = '#CD5C5C';
-                ctx.font = `bold ${Math.max(10, cellSize * 0.8)}px sans-serif`;
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                
-                this.leftMittenOutline.markers.forEach(marker => {
-                    ctx.fillText(marker.label, marker.x * cellSize, marker.y * cellSize);
-                });
-            }
         }
         
         // Draw RIGHT mitten outline
@@ -951,22 +855,10 @@ class CanvasDrawing {
                 ctx.lineTo(line.x2 * cellSize, line.y2 * cellSize);
             });
             ctx.stroke();
-            
-            // Draw markers for right mitten
-            if (this.rightMittenOutline.markers) {
-                ctx.fillStyle = '#CD5C5C';
-                ctx.font = `bold ${Math.max(10, cellSize * 0.8)}px sans-serif`;
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                
-                this.rightMittenOutline.markers.forEach(marker => {
-                    ctx.fillText(marker.label, marker.x * cellSize, marker.y * cellSize);
-                });
-            }
         }
         
         // Draw separator line between the two mittens
-        ctx.strokeStyle = '#999999';
+        ctx.strokeStyle = '#CCCCCC';
         ctx.lineWidth = 1;
         ctx.setLineDash([5, 5]);
         ctx.beginPath();
@@ -975,18 +867,6 @@ class CanvasDrawing {
         ctx.lineTo(separatorX, this.canvas.height);
         ctx.stroke();
         ctx.setLineDash([]);
-        
-        // Draw labels
-        ctx.fillStyle = '#666666';
-        ctx.font = `bold ${Math.max(12, cellSize)}px sans-serif`;
-        ctx.textAlign = 'center';
-        
-        // "VENSTRE" label
-        ctx.fillText('VENSTRE', (this.singleMittenWidth / 2) * cellSize, 12);
-        
-        // "HØJRE" label
-        const rightCenter = (this.singleMittenWidth + this.mittenGap + this.singleMittenWidth / 2) * cellSize;
-        ctx.fillText('HØJRE', rightCenter, 12);
     }
     
     /**
@@ -1054,17 +934,6 @@ class CanvasDrawing {
                     tempCtx.lineTo(line.x2 * cellSize, line.y2 * cellSize);
                 });
                 tempCtx.stroke();
-                
-                if (this.leftMittenOutline.markers) {
-                    tempCtx.fillStyle = '#CD5C5C';
-                    tempCtx.font = `bold ${cellSize * 0.8}px sans-serif`;
-                    tempCtx.textAlign = 'center';
-                    tempCtx.textBaseline = 'middle';
-                    
-                    this.leftMittenOutline.markers.forEach(marker => {
-                        tempCtx.fillText(marker.label, marker.x * cellSize, marker.y * cellSize);
-                    });
-                }
             }
             
             // Draw right mitten outline
@@ -1075,17 +944,6 @@ class CanvasDrawing {
                     tempCtx.lineTo(line.x2 * cellSize, line.y2 * cellSize);
                 });
                 tempCtx.stroke();
-                
-                if (this.rightMittenOutline.markers) {
-                    tempCtx.fillStyle = '#CD5C5C';
-                    tempCtx.font = `bold ${cellSize * 0.8}px sans-serif`;
-                    tempCtx.textAlign = 'center';
-                    tempCtx.textBaseline = 'middle';
-                    
-                    this.rightMittenOutline.markers.forEach(marker => {
-                        tempCtx.fillText(marker.label, marker.x * cellSize, marker.y * cellSize);
-                    });
-                }
             }
         }
         
