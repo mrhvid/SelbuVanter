@@ -3,19 +3,20 @@
  * Provides offline support and caching
  */
 
-const CACHE_NAME = 'vantetegner-v1';
-const STATIC_CACHE = 'vantetegner-static-v1';
-const DYNAMIC_CACHE = 'vantetegner-dynamic-v1';
+const CACHE_NAME = 'vantetegner-v2';
+const STATIC_CACHE = 'vantetegner-static-v2';
+const DYNAMIC_CACHE = 'vantetegner-dynamic-v2';
 
 // Files to cache immediately
 const STATIC_FILES = [
-    '/',
-    '/index.html',
-    '/styles.css',
-    '/app.js',
-    '/canvas-drawing.js',
-    '/pattern-manager.js',
-    '/manifest.json'
+    './',
+    './index.html',
+    './styles.css',
+    './app.js',
+    './canvas-drawing.js',
+    './pattern-manager.js',
+    './classic-pattern.js',
+    './manifest.json'
 ];
 
 // Install event - cache static files

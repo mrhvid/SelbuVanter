@@ -1,6 +1,7 @@
 /**
  * VanteTegner - Canvas Drawing Module
  * Handles all canvas drawing operations, touch/mouse input, and grid management
+ * Updated with authentic mitten templates from "Selbu Strikking" book
  */
 
 class CanvasDrawing {
@@ -8,18 +9,17 @@ class CanvasDrawing {
         this.canvas = document.getElementById(canvasId);
         this.ctx = this.canvas.getContext('2d');
         
-        // Grid configuration
-        this.cellSize = 16;
-        this.gridWidth = 48;  // Default medium size
-        this.gridHeight = 60;
+        // Grid configuration - will be set by size template
+        this.cellSize = 12;
+        this.gridWidth = 60;
+        this.gridHeight = 80;
         
-        // Pattern sections (based on Drops diagrams)
-        this.sections = {
-            m1: { start: 0, width: 12 },      // Border pattern
-            m2: { start: 12, width: 5 },      // Small separator
-            m3: { start: 17, width: 19 },     // Main pattern (top)
-            m4: { start: 36, width: 12 }      // Cuff pattern
-        };
+        // Current size template
+        this.currentSize = 'dame';
+        
+        // Mitten outline data - will be populated based on size
+        this.mittenOutline = null;
+        this.showMittenOutline = true;
         
         // Drawing state
         this.isDrawing = false;
@@ -52,10 +52,251 @@ class CanvasDrawing {
         // Touch handling
         this.lastTouchPos = null;
         
-        // Initialize
-        this.initializeGrid();
+        // Initialize with dame size by default
+        this.loadSizeTemplate('dame');
         this.setupEventListeners();
         this.render();
+    }
+    
+    /**
+     * Size templates based on the knitting book
+     * Each template defines grid dimensions and mitten outline
+     */
+    getSizeTemplates() {
+        return {
+            // Børnevante - Children's mitten (smallest)
+            barn: {
+                name: 'Børn',
+                gridWidth: 50,
+                gridHeight: 65,
+                cellSize: 12,
+                outline: this.createChildMittenOutline()
+            },
+            
+            // Damevante - Women's mitten (medium)
+            dame: {
+                name: 'Dame',
+                gridWidth: 60,
+                gridHeight: 80,
+                cellSize: 11,
+                outline: this.createWomenMittenOutline()
+            },
+            
+            // Herrevante - Men's mitten (largest)
+            herre: {
+                name: 'Herre',
+                gridWidth: 65,
+                gridHeight: 90,
+                cellSize: 10,
+                outline: this.createMenMittenOutline()
+            }
+        };
+    }
+    
+    /**
+     * Create børnevante (child mitten) outline
+     * Based on page 393 "Din egen barnevante"
+     */
+    createChildMittenOutline() {
+        const w = 50, h = 65;
+        const lines = [];
+        
+        // Main mitten body
+        const mainLeft = 12;
+        const mainRight = 38;
+        const cuffBottom = h - 2;
+        const cuffTop = h - 15;
+        const thumbJoin = h - 25;
+        const fingertipStart = 10;
+        
+        // Left side of main mitten
+        lines.push({ x1: mainLeft, y1: cuffBottom, x2: mainLeft, y2: thumbJoin });
+        
+        // Thumb gusset (left side)
+        const thumbLeft = 5;
+        const thumbTop = thumbJoin - 18;
+        lines.push({ x1: mainLeft, y1: thumbJoin, x2: thumbLeft, y2: thumbJoin - 5 });
+        lines.push({ x1: thumbLeft, y1: thumbJoin - 5, x2: thumbLeft, y2: thumbTop + 5 });
+        
+        // Thumb top (curved)
+        lines.push({ x1: thumbLeft, y1: thumbTop + 5, x2: thumbLeft + 2, y2: thumbTop + 2 });
+        lines.push({ x1: thumbLeft + 2, y1: thumbTop + 2, x2: thumbLeft + 4, y2: thumbTop });
+        lines.push({ x1: thumbLeft + 4, y1: thumbTop, x2: thumbLeft + 6, y2: thumbTop + 2 });
+        lines.push({ x1: thumbLeft + 6, y1: thumbTop + 2, x2: thumbLeft + 8, y2: thumbTop + 5 });
+        
+        // Back to main body
+        lines.push({ x1: thumbLeft + 8, y1: thumbTop + 5, x2: mainLeft, y2: thumbJoin - 15 });
+        lines.push({ x1: mainLeft, y1: thumbJoin - 15, x2: mainLeft, y2: fingertipStart + 5 });
+        
+        // Fingertip (curved top)
+        lines.push({ x1: mainLeft, y1: fingertipStart + 5, x2: mainLeft + 3, y2: fingertipStart + 2 });
+        lines.push({ x1: mainLeft + 3, y1: fingertipStart + 2, x2: mainLeft + 6, y2: fingertipStart });
+        const midPoint = (mainLeft + mainRight) / 2;
+        lines.push({ x1: mainLeft + 6, y1: fingertipStart, x2: midPoint, y2: fingertipStart - 2 });
+        lines.push({ x1: midPoint, y1: fingertipStart - 2, x2: mainRight - 6, y2: fingertipStart });
+        lines.push({ x1: mainRight - 6, y1: fingertipStart, x2: mainRight - 3, y2: fingertipStart + 2 });
+        lines.push({ x1: mainRight - 3, y1: fingertipStart + 2, x2: mainRight, y2: fingertipStart + 5 });
+        
+        // Right side of main mitten
+        lines.push({ x1: mainRight, y1: fingertipStart + 5, x2: mainRight, y2: cuffBottom });
+        
+        // Bottom (cuff)
+        lines.push({ x1: mainRight, y1: cuffBottom, x2: mainLeft, y2: cuffBottom });
+        
+        // Section markers (M labels)
+        const markers = [
+            { x: mainLeft - 3, y: thumbJoin + 5, label: 'M' }
+        ];
+        
+        return { lines, markers, thumbArea: { left: thumbLeft, top: thumbTop, right: thumbLeft + 8, bottom: thumbJoin } };
+    }
+    
+    /**
+     * Create damevante (women's mitten) outline
+     * Based on page 394 "Din egen damevante"
+     */
+    createWomenMittenOutline() {
+        const w = 60, h = 80;
+        const lines = [];
+        
+        // Main dimensions
+        const mainLeft = 15;
+        const mainRight = 45;
+        const cuffBottom = h - 2;
+        const cuffTop = h - 18;
+        const thumbJoin = h - 30;
+        const fingertipStart = 10;
+        
+        // Left side of main mitten (from cuff up)
+        lines.push({ x1: mainLeft, y1: cuffBottom, x2: mainLeft, y2: thumbJoin });
+        
+        // Thumb gusset (left side)
+        const thumbLeft = 5;
+        const thumbTop = thumbJoin - 22;
+        lines.push({ x1: mainLeft, y1: thumbJoin, x2: thumbLeft + 2, y2: thumbJoin - 6 });
+        lines.push({ x1: thumbLeft + 2, y1: thumbJoin - 6, x2: thumbLeft, y2: thumbJoin - 10 });
+        lines.push({ x1: thumbLeft, y1: thumbJoin - 10, x2: thumbLeft, y2: thumbTop + 6 });
+        
+        // Thumb top (curved with characteristic points)
+        lines.push({ x1: thumbLeft, y1: thumbTop + 6, x2: thumbLeft + 2, y2: thumbTop + 3 });
+        lines.push({ x1: thumbLeft + 2, y1: thumbTop + 3, x2: thumbLeft + 4, y2: thumbTop + 1 });
+        lines.push({ x1: thumbLeft + 4, y1: thumbTop + 1, x2: thumbLeft + 6, y2: thumbTop });
+        lines.push({ x1: thumbLeft + 6, y1: thumbTop, x2: thumbLeft + 8, y2: thumbTop + 1 });
+        lines.push({ x1: thumbLeft + 8, y1: thumbTop + 1, x2: thumbLeft + 10, y2: thumbTop + 3 });
+        lines.push({ x1: thumbLeft + 10, y1: thumbTop + 3, x2: thumbLeft + 12, y2: thumbTop + 6 });
+        
+        // Back to main body
+        lines.push({ x1: thumbLeft + 12, y1: thumbTop + 6, x2: mainLeft, y2: thumbJoin - 18 });
+        lines.push({ x1: mainLeft, y1: thumbJoin - 18, x2: mainLeft, y2: fingertipStart + 6 });
+        
+        // Fingertip (curved top with characteristic Selbu shape)
+        lines.push({ x1: mainLeft, y1: fingertipStart + 6, x2: mainLeft + 3, y2: fingertipStart + 3 });
+        lines.push({ x1: mainLeft + 3, y1: fingertipStart + 3, x2: mainLeft + 6, y2: fingertipStart + 1 });
+        lines.push({ x1: mainLeft + 6, y1: fingertipStart + 1, x2: mainLeft + 9, y2: fingertipStart });
+        
+        const midX = (mainLeft + mainRight) / 2;
+        lines.push({ x1: mainLeft + 9, y1: fingertipStart, x2: midX, y2: fingertipStart - 2 });
+        lines.push({ x1: midX, y1: fingertipStart - 2, x2: mainRight - 9, y2: fingertipStart });
+        
+        lines.push({ x1: mainRight - 9, y1: fingertipStart, x2: mainRight - 6, y2: fingertipStart + 1 });
+        lines.push({ x1: mainRight - 6, y1: fingertipStart + 1, x2: mainRight - 3, y2: fingertipStart + 3 });
+        lines.push({ x1: mainRight - 3, y1: fingertipStart + 3, x2: mainRight, y2: fingertipStart + 6 });
+        
+        // Right side of main mitten
+        lines.push({ x1: mainRight, y1: fingertipStart + 6, x2: mainRight, y2: cuffBottom });
+        
+        // Bottom (cuff)
+        lines.push({ x1: mainRight, y1: cuffBottom, x2: mainLeft, y2: cuffBottom });
+        
+        // Section markers
+        const markers = [
+            { x: mainLeft - 4, y: thumbJoin + 8, label: 'M' },
+            { x: thumbLeft + 3, y: thumbJoin - 2, label: 'M' }
+        ];
+        
+        return { lines, markers, thumbArea: { left: thumbLeft, top: thumbTop, right: thumbLeft + 12, bottom: thumbJoin } };
+    }
+    
+    /**
+     * Create herrevante (men's mitten) outline
+     * Based on page 395 "Din egen herrevante"
+     */
+    createMenMittenOutline() {
+        const w = 65, h = 90;
+        const lines = [];
+        
+        // Main dimensions (larger than dame)
+        const mainLeft = 16;
+        const mainRight = 49;
+        const cuffBottom = h - 2;
+        const cuffTop = h - 20;
+        const thumbJoin = h - 35;
+        const fingertipStart = 10;
+        
+        // Left side of main mitten
+        lines.push({ x1: mainLeft, y1: cuffBottom, x2: mainLeft, y2: thumbJoin });
+        
+        // Thumb gusset (left side) - larger for men
+        const thumbLeft = 4;
+        const thumbTop = thumbJoin - 26;
+        lines.push({ x1: mainLeft, y1: thumbJoin, x2: thumbLeft + 3, y2: thumbJoin - 7 });
+        lines.push({ x1: thumbLeft + 3, y1: thumbJoin - 7, x2: thumbLeft, y2: thumbJoin - 12 });
+        lines.push({ x1: thumbLeft, y1: thumbJoin - 12, x2: thumbLeft, y2: thumbTop + 7 });
+        
+        // Thumb top (curved)
+        lines.push({ x1: thumbLeft, y1: thumbTop + 7, x2: thumbLeft + 2, y2: thumbTop + 4 });
+        lines.push({ x1: thumbLeft + 2, y1: thumbTop + 4, x2: thumbLeft + 5, y2: thumbTop + 2 });
+        lines.push({ x1: thumbLeft + 5, y1: thumbTop + 2, x2: thumbLeft + 7, y2: thumbTop });
+        lines.push({ x1: thumbLeft + 7, y1: thumbTop, x2: thumbLeft + 9, y2: thumbTop + 2 });
+        lines.push({ x1: thumbLeft + 9, y1: thumbTop + 2, x2: thumbLeft + 12, y2: thumbTop + 4 });
+        lines.push({ x1: thumbLeft + 12, y1: thumbTop + 4, x2: thumbLeft + 14, y2: thumbTop + 7 });
+        
+        // Back to main body
+        lines.push({ x1: thumbLeft + 14, y1: thumbTop + 7, x2: mainLeft, y2: thumbJoin - 20 });
+        lines.push({ x1: mainLeft, y1: thumbJoin - 20, x2: mainLeft, y2: fingertipStart + 7 });
+        
+        // Fingertip (larger curved top)
+        lines.push({ x1: mainLeft, y1: fingertipStart + 7, x2: mainLeft + 4, y2: fingertipStart + 4 });
+        lines.push({ x1: mainLeft + 4, y1: fingertipStart + 4, x2: mainLeft + 8, y2: fingertipStart + 2 });
+        lines.push({ x1: mainLeft + 8, y1: fingertipStart + 2, x2: mainLeft + 11, y2: fingertipStart });
+        
+        const midX = (mainLeft + mainRight) / 2;
+        lines.push({ x1: mainLeft + 11, y1: fingertipStart, x2: midX, y2: fingertipStart - 3 });
+        lines.push({ x1: midX, y1: fingertipStart - 3, x2: mainRight - 11, y2: fingertipStart });
+        
+        lines.push({ x1: mainRight - 11, y1: fingertipStart, x2: mainRight - 8, y2: fingertipStart + 2 });
+        lines.push({ x1: mainRight - 8, y1: fingertipStart + 2, x2: mainRight - 4, y2: fingertipStart + 4 });
+        lines.push({ x1: mainRight - 4, y1: fingertipStart + 4, x2: mainRight, y2: fingertipStart + 7 });
+        
+        // Right side of main mitten
+        lines.push({ x1: mainRight, y1: fingertipStart + 7, x2: mainRight, y2: cuffBottom });
+        
+        // Bottom (cuff)
+        lines.push({ x1: mainRight, y1: cuffBottom, x2: mainLeft, y2: cuffBottom });
+        
+        // Section markers
+        const markers = [
+            { x: mainLeft - 4, y: thumbJoin + 10, label: 'M' },
+            { x: thumbLeft + 4, y: thumbJoin - 3, label: 'M' }
+        ];
+        
+        return { lines, markers, thumbArea: { left: thumbLeft, top: thumbTop, right: thumbLeft + 14, bottom: thumbJoin } };
+    }
+    
+    /**
+     * Load size template and initialize grid
+     */
+    loadSizeTemplate(sizeName) {
+        const templates = this.getSizeTemplates();
+        const template = templates[sizeName] || templates.dame;
+        
+        this.currentSize = sizeName;
+        this.gridWidth = template.gridWidth;
+        this.gridHeight = template.gridHeight;
+        this.cellSize = template.cellSize;
+        this.mittenOutline = template.outline;
+        
+        this.initializeGrid();
     }
     
     /**
@@ -66,7 +307,7 @@ class CanvasDrawing {
         for (let y = 0; y < this.gridHeight; y++) {
             this.grid[y] = [];
             for (let x = 0; x < this.gridWidth; x++) {
-                this.grid[y][x] = null; // null = empty/transparent
+                this.grid[y][x] = null;
             }
         }
         this.resizeCanvas();
@@ -82,7 +323,6 @@ class CanvasDrawing {
         this.canvas.width = width;
         this.canvas.height = height;
         
-        // Apply crisp pixel rendering
         this.ctx.imageSmoothingEnabled = false;
     }
     
@@ -90,62 +330,45 @@ class CanvasDrawing {
      * Set mitten size template
      */
     setSize(size) {
-        const sizes = {
-            small: {
-                gridWidth: 44,
-                sections: {
-                    m1: { start: 0, width: 11 },
-                    m2: { start: 11, width: 5 },
-                    m3: { start: 16, width: 17 },
-                    m4: { start: 33, width: 11 }
-                }
-            },
-            medium: {
-                gridWidth: 48,
-                sections: {
-                    m1: { start: 0, width: 12 },
-                    m2: { start: 12, width: 5 },
-                    m3: { start: 17, width: 19 },
-                    m4: { start: 36, width: 12 }
-                }
-            },
-            large: {
-                gridWidth: 52,
-                sections: {
-                    m1: { start: 0, width: 13 },
-                    m2: { start: 13, width: 5 },
-                    m3: { start: 18, width: 21 },
-                    m4: { start: 39, width: 13 }
-                }
-            }
+        // Map old size names to new
+        const sizeMap = {
+            'small': 'barn',
+            'medium': 'dame',
+            'large': 'herre',
+            'barn': 'barn',
+            'dame': 'dame',
+            'herre': 'herre'
         };
         
-        const config = sizes[size] || sizes.medium;
+        const mappedSize = sizeMap[size] || 'dame';
         
-        // Save current pattern state
+        // Save current state
         this.saveState();
         
-        // Update dimensions
-        this.gridWidth = config.gridWidth;
-        this.sections = config.sections;
-        
-        // Resize grid (try to preserve existing pattern)
+        // Save current pattern
         const oldGrid = this.grid;
-        this.grid = [];
+        const oldWidth = this.gridWidth;
+        const oldHeight = this.gridHeight;
         
-        for (let y = 0; y < this.gridHeight; y++) {
-            this.grid[y] = [];
-            for (let x = 0; x < this.gridWidth; x++) {
-                // Preserve existing cells where possible
-                if (oldGrid[y] && oldGrid[y][x] !== undefined) {
-                    this.grid[y][x] = oldGrid[y][x];
-                } else {
-                    this.grid[y][x] = null;
+        // Load new template
+        this.loadSizeTemplate(mappedSize);
+        
+        // Try to preserve pattern (center it if sizes differ)
+        const offsetX = Math.floor((this.gridWidth - oldWidth) / 2);
+        const offsetY = Math.floor((this.gridHeight - oldHeight) / 2);
+        
+        for (let y = 0; y < oldHeight; y++) {
+            for (let x = 0; x < oldWidth; x++) {
+                const newX = x + offsetX;
+                const newY = y + offsetY;
+                if (oldGrid[y] && oldGrid[y][x] && 
+                    newX >= 0 && newX < this.gridWidth && 
+                    newY >= 0 && newY < this.gridHeight) {
+                    this.grid[newY][newX] = oldGrid[y][x];
                 }
             }
         }
         
-        this.resizeCanvas();
         this.render();
     }
     
@@ -254,7 +477,6 @@ class CanvasDrawing {
         
         const cell = this.getCellFromEvent(e);
         
-        // Draw line from last position for smooth strokes
         if (this.lastTouchPos) {
             this.drawLine(this.lastTouchPos.x, this.lastTouchPos.y, cell.x, cell.y);
         }
@@ -340,7 +562,6 @@ class CanvasDrawing {
     floodFill(startX, startY, fillColor) {
         const targetColor = this.getCell(startX, startY);
         
-        // Don't fill if target color is same as fill color
         if (targetColor === fillColor) return;
         
         const stack = [{ x: startX, y: startY }];
@@ -357,7 +578,6 @@ class CanvasDrawing {
             visited.add(key);
             this.setCell(x, y, fillColor);
             
-            // Add neighbors
             stack.push({ x: x + 1, y });
             stack.push({ x: x - 1, y });
             stack.push({ x, y: y + 1 });
@@ -423,12 +643,10 @@ class CanvasDrawing {
         const state = JSON.stringify(this.grid);
         this.undoStack.push(state);
         
-        // Limit undo stack size
         if (this.undoStack.length > this.maxUndoSteps) {
             this.undoStack.shift();
         }
         
-        // Clear redo stack on new action
         this.redoStack = [];
     }
     
@@ -438,10 +656,8 @@ class CanvasDrawing {
     undo() {
         if (this.undoStack.length === 0) return false;
         
-        // Save current state to redo stack
         this.redoStack.push(JSON.stringify(this.grid));
         
-        // Restore previous state
         const state = this.undoStack.pop();
         this.grid = JSON.parse(state);
         
@@ -455,10 +671,8 @@ class CanvasDrawing {
     redo() {
         if (this.redoStack.length === 0) return false;
         
-        // Save current state to undo stack
         this.undoStack.push(JSON.stringify(this.grid));
         
-        // Restore redo state
         const state = this.redoStack.pop();
         this.grid = JSON.parse(state);
         
@@ -499,6 +713,14 @@ class CanvasDrawing {
     }
     
     /**
+     * Toggle mitten outline visibility
+     */
+    setShowMittenOutline(show) {
+        this.showMittenOutline = show;
+        this.render();
+    }
+    
+    /**
      * Set current tool
      */
     setTool(tool) {
@@ -533,7 +755,7 @@ class CanvasDrawing {
         const ctx = this.ctx;
         const cellSize = this.cellSize * this.zoom;
         
-        // Clear canvas
+        // Clear canvas with white background
         ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         
@@ -554,13 +776,15 @@ class CanvasDrawing {
             }
         }
         
-        // Draw grid lines
+        // Draw grid lines (underneath outline)
         if (this.showGrid) {
             this.drawGrid();
         }
         
-        // Draw section dividers
-        this.drawSectionDividers();
+        // Draw mitten outline (on top)
+        if (this.showMittenOutline && this.mittenOutline) {
+            this.drawMittenOutline();
+        }
     }
     
     /**
@@ -570,7 +794,7 @@ class CanvasDrawing {
         const ctx = this.ctx;
         const cellSize = this.cellSize * this.zoom;
         
-        ctx.strokeStyle = '#CCCCCC';
+        ctx.strokeStyle = '#DDDDDD';
         ctx.lineWidth = 0.5;
         
         // Vertical lines
@@ -589,18 +813,18 @@ class CanvasDrawing {
             ctx.stroke();
         }
         
-        // Draw major grid lines every 5 cells
-        ctx.strokeStyle = '#999999';
+        // Draw major grid lines every 10 cells
+        ctx.strokeStyle = '#BBBBBB';
         ctx.lineWidth = 1;
         
-        for (let x = 0; x <= this.gridWidth; x += 5) {
+        for (let x = 0; x <= this.gridWidth; x += 10) {
             ctx.beginPath();
             ctx.moveTo(x * cellSize, 0);
             ctx.lineTo(x * cellSize, this.canvas.height);
             ctx.stroke();
         }
         
-        for (let y = 0; y <= this.gridHeight; y += 5) {
+        for (let y = 0; y <= this.gridHeight; y += 10) {
             ctx.beginPath();
             ctx.moveTo(0, y * cellSize);
             ctx.lineTo(this.canvas.width, y * cellSize);
@@ -609,33 +833,45 @@ class CanvasDrawing {
     }
     
     /**
-     * Draw section dividers based on mitten template
+     * Draw mitten outline overlay
      */
-    drawSectionDividers() {
+    drawMittenOutline() {
         const ctx = this.ctx;
         const cellSize = this.cellSize * this.zoom;
         
-        ctx.strokeStyle = '#2c5545';
+        // Set outline style - red/coral color like in the book
+        ctx.strokeStyle = '#CD5C5C';  // Indian red, similar to book
         ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
         
-        // Draw vertical dividers between sections
-        Object.values(this.sections).forEach(section => {
-            const x = section.start * cellSize;
+        // Draw all outline lines
+        if (this.mittenOutline.lines) {
+            ctx.beginPath();
+            this.mittenOutline.lines.forEach(line => {
+                ctx.moveTo(line.x1 * cellSize, line.y1 * cellSize);
+                ctx.lineTo(line.x2 * cellSize, line.y2 * cellSize);
+            });
+            ctx.stroke();
+        }
+        
+        // Draw section markers (M labels)
+        if (this.mittenOutline.markers) {
+            ctx.fillStyle = '#CD5C5C';
+            ctx.font = `bold ${Math.max(10, cellSize * 0.8)}px sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
             
-            if (section.start > 0) {
-                ctx.beginPath();
-                ctx.moveTo(x, 0);
-                ctx.lineTo(x, this.canvas.height);
-                ctx.stroke();
-            }
-        });
+            this.mittenOutline.markers.forEach(marker => {
+                ctx.fillText(marker.label, marker.x * cellSize, marker.y * cellSize);
+            });
+        }
     }
     
     /**
      * Export pattern as PNG data URL
      */
     exportAsPNG(scale = 2) {
-        // Create temporary canvas at higher resolution
         const tempCanvas = document.createElement('canvas');
         const tempCtx = tempCanvas.getContext('2d');
         
@@ -680,6 +916,33 @@ class CanvasDrawing {
             tempCtx.moveTo(0, y * cellSize);
             tempCtx.lineTo(tempCanvas.width, y * cellSize);
             tempCtx.stroke();
+        }
+        
+        // Draw mitten outline on export
+        if (this.showMittenOutline && this.mittenOutline && this.mittenOutline.lines) {
+            tempCtx.strokeStyle = '#CD5C5C';
+            tempCtx.lineWidth = 2 * scale;
+            tempCtx.lineCap = 'round';
+            tempCtx.lineJoin = 'round';
+            
+            tempCtx.beginPath();
+            this.mittenOutline.lines.forEach(line => {
+                tempCtx.moveTo(line.x1 * cellSize, line.y1 * cellSize);
+                tempCtx.lineTo(line.x2 * cellSize, line.y2 * cellSize);
+            });
+            tempCtx.stroke();
+            
+            // Draw markers
+            if (this.mittenOutline.markers) {
+                tempCtx.fillStyle = '#CD5C5C';
+                tempCtx.font = `bold ${cellSize * 0.8}px sans-serif`;
+                tempCtx.textAlign = 'center';
+                tempCtx.textBaseline = 'middle';
+                
+                this.mittenOutline.markers.forEach(marker => {
+                    tempCtx.fillText(marker.label, marker.x * cellSize, marker.y * cellSize);
+                });
+            }
         }
         
         return tempCanvas.toDataURL('image/png');
@@ -741,7 +1004,7 @@ class CanvasDrawing {
             grid: this.grid,
             gridWidth: this.gridWidth,
             gridHeight: this.gridHeight,
-            sections: this.sections,
+            currentSize: this.currentSize,
             colors: this.colors
         };
     }
@@ -752,10 +1015,24 @@ class CanvasDrawing {
     loadPatternData(data) {
         this.saveState();
         
-        this.gridWidth = data.gridWidth || 48;
-        this.gridHeight = data.gridHeight || 60;
-        this.sections = data.sections || this.sections;
-        this.grid = data.grid || [];
+        // If pattern has a size, load that template first
+        if (data.currentSize) {
+            this.loadSizeTemplate(data.currentSize);
+        } else {
+            // Fallback to grid dimensions
+            this.gridWidth = data.gridWidth || 60;
+            this.gridHeight = data.gridHeight || 80;
+            this.initializeGrid();
+        }
+        
+        // Load the grid data
+        if (data.grid) {
+            for (let y = 0; y < Math.min(data.grid.length, this.gridHeight); y++) {
+                for (let x = 0; x < Math.min(data.grid[y].length, this.gridWidth); x++) {
+                    this.grid[y][x] = data.grid[y][x];
+                }
+            }
+        }
         
         if (data.colors) {
             this.colors = { ...this.colors, ...data.colors };

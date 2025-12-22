@@ -5,23 +5,26 @@ En Progressive Web App (PWA) til at designe traditionelle norske Selbu vante str
 ## ✨ Funktioner
 
 - **Canvas-baseret mønsterdesigner** - Tegn pixel-perfekte strikemønstre
+- **Autentiske vanteskabeloner** - Børn, Dame og Herre størrelser med rødt omrids
+- **Vanteomrids overlay** - Røde stregmarkeringer der altid er synlige ved print
 - **Touch-optimeret** - Virker glimrende på iPad og mobil
 - **4-farvepalette** - Naturhvid, mørkegrå + 2 valgfrie farver
+- **Klassisk eksempelmønster** - Indlæs et traditionelt Selbu design
 - **Mønsterspejling** - Spejl mønsteret horisontalt
 - **Gem/Indlæs mønstre** - Gem dine designs lokalt
-- **Eksporter til PNG** - Udskriv dine mønstre
+- **Eksporter til PNG** - Udskriv dine mønstre med vanteomrids
 - **Virker offline** - PWA med fuld offline-support
 - **Responsivt design** - Desktop, tablet og mobil
 
-## 🎯 Vantetørrelser
+## 🎯 Vantestørrelser
 
-Baseret på Drops-opskrifter:
+Baseret på "Selbu Strikking" bogen:
 
-| Størrelse | Omfang | M.1 | M.2 | M.3 | M.4 |
-|-----------|--------|-----|-----|-----|-----|
-| Small (S) | 44 masker | 11m | 5m | 17m | 11m |
-| Medium (M) | 48 masker | 12m | 5m | 19m | 12m |
-| Large (L) | 52 masker | 13m | 5m | 21m | 13m |
+| Størrelse | Type | Grid |
+|-----------|------|------|
+| Børn | Barnevante | 50×65 |
+| Dame | Damevante | 60×80 |
+| Herre | Herrevante | 65×90 |
 
 ## ⌨️ Genvejstaster
 
@@ -77,8 +80,9 @@ SelbuVanter/
 ├── index.html          # Hovedside med UI
 ├── styles.css          # Responsiv CSS
 ├── app.js              # Hovedapplikation
-├── canvas-drawing.js   # Canvas og tegning
+├── canvas-drawing.js   # Canvas og tegning med vanteomrids
 ├── pattern-manager.js  # Gem og eksport
+├── classic-pattern.js  # Klassisk Selbu eksempelmønster
 ├── manifest.json       # PWA manifest
 ├── sw.js               # Service Worker
 ├── icons/              # App-ikoner

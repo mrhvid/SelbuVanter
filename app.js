@@ -88,6 +88,12 @@ class VanteTegnerApp {
             this.saveSettings();
         });
         
+        // Mitten outline toggle
+        document.getElementById('showOutline').addEventListener('change', (e) => {
+            this.canvas.setShowMittenOutline(e.target.checked);
+            this.saveSettings();
+        });
+        
         document.getElementById('showMirror').addEventListener('change', (e) => {
             this.toggleMirrorPreview(e.target.checked);
             this.saveSettings();
@@ -103,6 +109,10 @@ class VanteTegnerApp {
         });
         
         // Action buttons
+        document.getElementById('loadExample').addEventListener('click', () => {
+            this.loadExamplePattern();
+        });
+        
         document.getElementById('clearCanvas').addEventListener('click', () => {
             this.confirmClear();
         });
@@ -216,8 +226,15 @@ class VanteTegnerApp {
             btn.classList.toggle('active', btn.dataset.size === size);
         });
         
+        // Size name mapping for toast
+        const sizeNames = {
+            'barn': 'Børn',
+            'dame': 'Dame',
+            'herre': 'Herre'
+        };
+        
         this.saveSettings();
-        this.showToast(`Størrelse ændret til ${size.toUpperCase()}`);
+        this.showToast(`Størrelse ændret til ${sizeNames[size] || size}`);
     }
     
     /**
@@ -362,6 +379,28 @@ class VanteTegnerApp {
         if (confirm('Er du sikker på at du vil slette hele mønsteret?')) {
             this.canvas.clear();
             this.showToast('Mønster ryddet');
+        }
+    }
+    
+    /**
+     * Load the classic Selbu example pattern
+     */
+    loadExamplePattern() {
+        if (typeof CLASSIC_SELBU_PATTERN !== 'undefined') {
+            // Ask for confirmation if there's existing work
+            if (confirm('Vil du indlæse det klassiske Selbu eksempel? Dit nuværende arbejde vil blive overskrevet.')) {
+                this.canvas.loadPatternData(CLASSIC_SELBU_PATTERN);
+                this.currentSize = CLASSIC_SELBU_PATTERN.currentSize || 'dame';
+                
+                // Update size buttons
+                document.querySelectorAll('.size-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.size === this.currentSize);
+                });
+                
+                this.showToast('Klassisk Selbu mønster indlæst');
+            }
+        } else {
+            this.showToast('Eksempelmønster ikke tilgængeligt');
         }
     }
     
@@ -667,6 +706,7 @@ class VanteTegnerApp {
         const settings = {
             size: this.currentSize,
             showGrid: document.getElementById('showGrid').checked,
+            showOutline: document.getElementById('showOutline').checked,
             showMirror: document.getElementById('showMirror').checked,
             zoom: this.canvas.zoom,
             customColor1: document.getElementById('customColor1').value,
@@ -684,23 +724,25 @@ class VanteTegnerApp {
     loadSettings() {
         const settings = this.patternManager.loadSettings();
         
-        this.currentSize = settings.size;
-        this.currentColor = settings.lastColor;
-        this.currentTool = settings.lastTool;
+        this.currentSize = settings.size || 'dame';
+        this.currentColor = settings.lastColor || 'natural';
+        this.currentTool = settings.lastTool || 'pencil';
         
         // Apply settings
-        document.getElementById('showGrid').checked = settings.showGrid;
-        document.getElementById('showMirror').checked = settings.showMirror;
-        document.getElementById('customColor1').value = settings.customColor1;
-        document.getElementById('customColor2').value = settings.customColor2;
+        document.getElementById('showGrid').checked = settings.showGrid !== false;
+        document.getElementById('showOutline').checked = settings.showOutline !== false;
+        document.getElementById('showMirror').checked = settings.showMirror || false;
+        document.getElementById('customColor1').value = settings.customColor1 || '#8B0000';
+        document.getElementById('customColor2').value = settings.customColor2 || '#1E4D6B';
         
-        this.canvas.setShowGrid(settings.showGrid);
-        this.canvas.setZoom(settings.zoom);
-        this.updateZoomDisplay(settings.zoom);
+        this.canvas.setShowGrid(settings.showGrid !== false);
+        this.canvas.setShowMittenOutline(settings.showOutline !== false);
+        this.canvas.setZoom(settings.zoom || 1);
+        this.updateZoomDisplay(settings.zoom || 1);
         
         // Update custom colors
-        this.updateCustomColor('accent1', settings.customColor1);
-        this.updateCustomColor('accent2', settings.customColor2);
+        this.updateCustomColor('accent1', settings.customColor1 || '#8B0000');
+        this.updateCustomColor('accent2', settings.customColor2 || '#1E4D6B');
     }
     
     /**

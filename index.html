@@ -54,9 +54,9 @@
                 <div class="panel-section">
                     <h3>Størrelse</h3>
                     <div class="size-selector">
-                        <button class="size-btn" data-size="small">S (44m)</button>
-                        <button class="size-btn active" data-size="medium">M (48m)</button>
-                        <button class="size-btn" data-size="large">L (52m)</button>
+                        <button class="size-btn" data-size="barn">Børn</button>
+                        <button class="size-btn active" data-size="dame">Dame</button>
+                        <button class="size-btn" data-size="herre">Herre</button>
                     </div>
                 </div>
 
@@ -126,6 +126,10 @@
                             <span>Vis gitter</span>
                         </label>
                         <label class="checkbox-label">
+                            <input type="checkbox" id="showOutline" checked>
+                            <span>Vis vanteomrids</span>
+                        </label>
+                        <label class="checkbox-label">
                             <input type="checkbox" id="showMirror">
                             <span>Vis spejlbillede</span>
                         </label>
@@ -140,6 +144,12 @@
                 <div class="panel-section">
                     <h3>Mønster</h3>
                     <div class="pattern-actions">
+                        <button id="loadExample" class="action-btn example">
+                            <svg viewBox="0 0 24 24" width="16" height="16">
+                                <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                            Klassisk eksempel
+                        </button>
                         <button id="clearCanvas" class="action-btn danger">
                             <svg viewBox="0 0 24 24" width="16" height="16">
                                 <path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
@@ -174,14 +184,6 @@
                 <div class="canvas-wrapper" id="canvasWrapper">
                     <canvas id="mainCanvas"></canvas>
                     <canvas id="previewCanvas" class="preview-canvas"></canvas>
-                </div>
-                
-                <!-- Section Labels -->
-                <div class="section-labels" id="sectionLabels">
-                    <div class="section-label" data-section="m1">M.1</div>
-                    <div class="section-label" data-section="m2">M.2</div>
-                    <div class="section-label" data-section="m3">M.3</div>
-                    <div class="section-label" data-section="m4">M.4</div>
                 </div>
             </div>
         </main>
@@ -242,6 +244,7 @@
     </div>
 
     <!-- Scripts -->
+    <script src="classic-pattern.js"></script>
     <script src="canvas-drawing.js"></script>
     <script src="pattern-manager.js"></script>
     <script src="app.js"></script>

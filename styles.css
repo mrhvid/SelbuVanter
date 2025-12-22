@@ -384,6 +384,17 @@ body {
     color: white;
 }
 
+.action-btn.example {
+    color: var(--primary);
+    border-color: var(--primary);
+    background: rgba(44, 85, 69, 0.1);
+}
+
+.action-btn.example:hover {
+    background: var(--primary);
+    color: white;
+}
+
 /* Pattern Library */
 .pattern-library {
     max-height: 200px;
