@@ -67,17 +67,17 @@ class CanvasDrawing {
             // Børnevante - Children's mitten (smallest)
             barn: {
                 name: 'Børn',
-                gridWidth: 55,
-                gridHeight: 70,
-                cellSize: 11,
+                gridWidth: 50,
+                gridHeight: 80,
+                cellSize: 10,
                 outline: this.createChildMittenOutline()
             },
             
             // Damevante - Women's mitten (medium)
             dame: {
                 name: 'Dame',
-                gridWidth: 65,
-                gridHeight: 85,
+                gridWidth: 70,
+                gridHeight: 80,
                 cellSize: 10,
                 outline: this.createWomenMittenOutline()
             },
@@ -85,9 +85,9 @@ class CanvasDrawing {
             // Herrevante - Men's mitten (largest)
             herre: {
                 name: 'Herre',
-                gridWidth: 75,
-                gridHeight: 95,
-                cellSize: 9,
+                gridWidth: 80,
+                gridHeight: 100,
+                cellSize: 10,
                 outline: this.createMenMittenOutline()
             }
         };
