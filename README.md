@@ -1,21 +1,21 @@
 # VanteTegner - Selbu Vante Designer 🧤
 
-En Progressive Web App (PWA) for å designe tradisjonelle norske Selbu-vantermønstre.
+En Progressive Web App (PWA) til at designe traditionelle norske Selbu vante strikke mønstre.
 
-## ✨ Funksjoner
+## ✨ Funktioner
 
-- **Canvas-basert mønsterdesigner** - Tegn pixel-perfekte strikemønstre
-- **Touch-optimalisert** - Fungerer utmerket på iPad og mobil
-- **4-fargepalett** - Naturhvit, mørkegrå + 2 valgfrie farger
-- **Mønsterspeilning** - Speil mønsteret horisontalt
-- **Lagre/Last mønstre** - Lagre dine design lokalt
-- **Eksporter til PNG** - Print ut dine mønstre
-- **Fungerer offline** - PWA med full offline-støtte
-- **Responsivt design** - Desktop, nettbrett og mobil
+- **Canvas-baseret mønsterdesigner** - Tegn pixel-perfekte strikemønstre
+- **Touch-optimeret** - Virker glimrende på iPad og mobil
+- **4-farvepalette** - Naturhvid, mørkegrå + 2 valgfrie farver
+- **Mønsterspejling** - Spejl mønsteret horisontalt
+- **Gem/Indlæs mønstre** - Gem dine designs lokalt
+- **Eksporter til PNG** - Udskriv dine mønstre
+- **Virker offline** - PWA med fuld offline-support
+- **Responsivt design** - Desktop, tablet og mobil
 
-## 🎯 Vantestørrelser
+## 🎯 Vantetørrelser
 
-Basert på Drops-oppskrifter:
+Baseret på Drops-opskrifter:
 
 | Størrelse | Omfang | M.1 | M.2 | M.3 | M.4 |
 |-----------|--------|-----|-----|-----|-----|
@@ -23,55 +23,52 @@ Basert på Drops-oppskrifter:
 | Medium (M) | 48 masker | 12m | 5m | 19m | 12m |
 | Large (L) | 52 masker | 13m | 5m | 21m | 13m |
 
-## ⌨️ Hurtigtaster
+## ⌨️ Genvejstaster
 
-| Tast | Funksjon |
+| Tast | Funktion |
 |------|----------|
-| W | Naturhvit farge |
-| G | Mørkegrå farge |
-| R | Farge 1 (rød) |
-| B | Farge 2 (blå) |
-| P | Blyantverktøy |
-| E | Viskelær |
-| F | Fyllverktøy |
-| M | Speil mønster |
-| +/- | Zoom inn/ut |
-| Ctrl+Z | Angre |
-| Ctrl+Y | Gjør om |
-| Ctrl+S | Lagre |
+| W | Naturhvid farve |
+| G | Mørkegrå farve |
+| R | Farve 1 (rød) |
+| B | Farve 2 (blå) |
+| P | Blyantværktøj |
+| E | Viskelæder |
+| F | Fyldte værktøj |
+| M | Spejl mønster |
+| +/- | Zoom ind/ud |
+| Ctrl+Z | Fortryd |
+| Ctrl+Y | Annuller fortryd |
+| Ctrl+S | Gem |
 
 ## 🚀 Kom i gang
 
-### Lokal utvikling
+### Brug PWA fra GitHub Pages
 
-1. Klon repositoriet:
-```bash
-git clone https://github.com/mrhvid/SelbuVanter.git
-cd SelbuVanter
-```
+**Den nemmeste måde** - ingen installation nødvendig!
 
-2. Start en lokal webserver:
-```bash
-# Med Python 3
-python -m http.server 8000
+Besøg appen direkte i din browser:
+**[https://mrhvid.github.io/SelbuVanter/](https://mrhvid.github.io/SelbuVanter/)**
 
-# Eller med Node.js
-npx serve .
+#### Installer app på din enhed
 
-# Eller med PHP
-php -S localhost:8000
-```
+**iOS (iPhone/iPad):**
+1. Åbn linket i Safari
+2. Tryk på del-knappen (kvadrat med pil)
+3. Vælg "Føj til startskærm"
+4. Giv appen et navn og tryk "Føj til"
 
-3. Åpne http://localhost:8000 i nettleseren
+**Android:**
+1. Åbn linket i Chrome
+2. Tryk på menu-ikonet (⋮)
+3. Vælg "Installer app"
+4. Bekræft installeringen
 
-### Hosting
+**Windows/Mac (Desktop):**
+1. Åbn linket i Chrome eller Edge
+2. Klik på installerings-ikonet i adresselinjen
+3. Bekræft installeringen
 
-Prosjektet er statisk og kan hostes på:
-
-- **GitHub Pages** - Gratis hosting direkte fra repo
-- **Azure Static Web Apps** - Gratis tier tilgjengelig
-- **Netlify** - Gratis for statiske sider
-- **Vercel** - Gratis for statiske prosjekter
+Når appen er installeret, virker den **offline** - du behøver ingen internetforbindelse for at tegne!
 
 ## 📁 Filstruktur
 
@@ -79,78 +76,61 @@ Prosjektet er statisk og kan hostes på:
 SelbuVanter/
 ├── index.html          # Hovedside med UI
 ├── styles.css          # Responsiv CSS
-├── app.js              # Hovedapplikasjon
+├── app.js              # Hovedapplikation
 ├── canvas-drawing.js   # Canvas og tegning
-├── pattern-manager.js  # Lagring og eksport
+├── pattern-manager.js  # Gem og eksport
 ├── manifest.json       # PWA manifest
 ├── sw.js               # Service Worker
 ├── icons/              # App-ikoner
-│   └── icon.svg        # Kildikon (SVG)
+│   ├── icon.svg        # Kildikon (SVG)
+│   ├── icon-192.png    # Ikon 192x192
+│   └── apple-touch-icon.png # iOS ikon
 └── README.md
 ```
 
-## 🖼️ Generere ikoner
+## 📱 Installer som app
 
-For å generere PNG-ikoner fra SVG:
+Appen er en **installabel PWA** - det betyder:
+- Ingen app store nødvendig
+- Virker på alle enhedder
+- Fuld offline-support
+- Samme brugeroplevelse som en native app
 
-```bash
-# Med ImageMagick
-for size in 72 96 128 144 152 192 384 512; do
-  convert -background none icons/icon.svg -resize ${size}x${size} icons/icon-${size}.png
-done
+Når du installerer appen, får den sit eget ikon på dit hjemmeskærm/desktop og kan køres som en selvstændig app.
 
-# Eller bruk online verktøy som realfavicongenerator.net
-```
+## 🎨 Om Selbu vanter
 
-## 📱 Installere som app
-
-### iOS (Safari)
-1. Åpne VanteTegner i Safari
-2. Trykk på Del-knappen
-3. Velg "Legg til på Hjem-skjerm"
-
-### Android (Chrome)
-1. Åpne VanteTegner i Chrome
-2. Trykk på menyikonet (⋮)
-3. Velg "Installer app" eller "Legg til på startskjermen"
-
-### Desktop (Chrome/Edge)
-1. Åpne VanteTegner
-2. Klikk på installikonet i adressefeltet
-3. Bekreft installasjonen
-
-## 🎨 Om Selbu-vanter
-
-Selbu-vanter er tradisjonelle norske strikkevanter med karakteristiske svart-hvite mønstre. Mønstrene stammer fra Selbu kommune i Trøndelag og ble populære på 1800-tallet.
+Selbu vanter er traditionelle norske strikkevanter med karakteristiske sort-hvide mønstre. Mønstrene stammer fra Selbu kommune i Trøndelag og blev populære på 1800-tallet.
 
 ### Typiske elementer:
-- **Åttebladsrose** - Det mest kjente motivet
-- **Stjerner** - Geometriske stjernemønstre
-- **Border** - Dekorative kantmønstre
-- **To farger** - Tradisjonelt svart og hvitt
+- **Ottebladsrose** - Det mest kendt motiv
+- **Stjerner** - Geometriske stjerne mønstre
+- **Borde** - Dekorative kantmønstre
+- **To farver** - Traditionelt sort og hvidt
 
 ## 🛠️ Teknologi
 
-- **Vanilla JavaScript** - Ingen avhengigheter
-- **HTML5 Canvas** - For tegning
-- **IndexedDB** - For mønsterlagring
-- **Service Worker** - For offline-støtte
-- **CSS Grid/Flexbox** - For responsivt design
+- **Vanilla JavaScript** - Ingen afhængigheder
+- **HTML5 Canvas** - Til tegning
+- **IndexedDB** - Til mønster lagring
+- **Service Worker** - Til offline-support
+- **CSS Grid/Flexbox** - Til responsivt design
+- **Progressive Web App (PWA)** - Installabel på alle enheder
 
-## 📄 Lisens
+## 📄 Licens
 
 MIT License - Se [LICENSE](LICENSE) for detaljer.
 
-## 🤝 Bidra
+## 🤝 Bidrag
 
 Bidrag er velkomne! 
 
-1. Fork prosjektet
-2. Lag en feature branch (`git checkout -b feature/NyFunksjon`)
-3. Commit endringer (`git commit -m 'Legg til ny funksjon'`)
-4. Push til branch (`git push origin feature/NyFunksjon`)
-5. Åpne en Pull Request
+1. Fork projektet
+2. Lav en feature branch (`git checkout -b feature/NyFunktion`)
+3. Commit dine ændringer (`git commit -m 'Tilføj ny funktion'`)
+4. Push til branch (`git push origin feature/NyFunktion`)
+5. Åbn en Pull Request
 
 ---
 
-Laget med ❤️ for norsk strikketradisjon
+Lavet med ❤️ for norsk strikekultur
