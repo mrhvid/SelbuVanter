@@ -67,27 +67,27 @@ class CanvasDrawing {
             // Børnevante - Children's mitten (smallest)
             barn: {
                 name: 'Børn',
-                gridWidth: 50,
-                gridHeight: 65,
-                cellSize: 12,
+                gridWidth: 55,
+                gridHeight: 70,
+                cellSize: 11,
                 outline: this.createChildMittenOutline()
             },
             
             // Damevante - Women's mitten (medium)
             dame: {
                 name: 'Dame',
-                gridWidth: 60,
-                gridHeight: 80,
-                cellSize: 11,
+                gridWidth: 65,
+                gridHeight: 85,
+                cellSize: 10,
                 outline: this.createWomenMittenOutline()
             },
             
             // Herrevante - Men's mitten (largest)
             herre: {
                 name: 'Herre',
-                gridWidth: 65,
-                gridHeight: 90,
-                cellSize: 10,
+                gridWidth: 75,
+                gridHeight: 95,
+                cellSize: 9,
                 outline: this.createMenMittenOutline()
             }
         };
@@ -95,192 +95,230 @@ class CanvasDrawing {
     
     /**
      * Create børnevante (child mitten) outline
-     * Based on page 393 "Din egen barnevante"
+     * Based on "Din egen barnevante" - precise pixel-perfect outline
      */
     createChildMittenOutline() {
-        const w = 50, h = 65;
         const lines = [];
         
-        // Main mitten body
-        const mainLeft = 12;
-        const mainRight = 38;
-        const cuffBottom = h - 2;
-        const cuffTop = h - 15;
-        const thumbJoin = h - 25;
-        const fingertipStart = 10;
+        // === THUMB (left side) ===
+        // Thumb dimensions: ~12 cells wide, ~22 cells tall
+        const thumbLeft = 3;
+        const thumbRight = 15;
+        const thumbBottom = 50;
+        const thumbTop = 28;
         
-        // Left side of main mitten
-        lines.push({ x1: mainLeft, y1: cuffBottom, x2: mainLeft, y2: thumbJoin });
+        // Left side of thumb
+        lines.push({ x1: thumbLeft, y1: thumbBottom, x2: thumbLeft, y2: thumbTop + 6 });
         
-        // Thumb gusset (left side)
-        const thumbLeft = 5;
-        const thumbTop = thumbJoin - 18;
-        lines.push({ x1: mainLeft, y1: thumbJoin, x2: thumbLeft, y2: thumbJoin - 5 });
-        lines.push({ x1: thumbLeft, y1: thumbJoin - 5, x2: thumbLeft, y2: thumbTop + 5 });
+        // Thumb top zigzag (characteristic W shape)
+        lines.push({ x1: thumbLeft, y1: thumbTop + 6, x2: thumbLeft + 2, y2: thumbTop + 4 });
+        lines.push({ x1: thumbLeft + 2, y1: thumbTop + 4, x2: thumbLeft + 4, y2: thumbTop + 2 });
+        lines.push({ x1: thumbLeft + 4, y1: thumbTop + 2, x2: thumbLeft + 6, y2: thumbTop });
+        lines.push({ x1: thumbLeft + 6, y1: thumbTop, x2: thumbLeft + 8, y2: thumbTop + 2 });
+        lines.push({ x1: thumbLeft + 8, y1: thumbTop + 2, x2: thumbLeft + 10, y2: thumbTop + 4 });
+        lines.push({ x1: thumbLeft + 10, y1: thumbTop + 4, x2: thumbRight, y2: thumbTop + 6 });
         
-        // Thumb top (curved)
-        lines.push({ x1: thumbLeft, y1: thumbTop + 5, x2: thumbLeft + 2, y2: thumbTop + 2 });
-        lines.push({ x1: thumbLeft + 2, y1: thumbTop + 2, x2: thumbLeft + 4, y2: thumbTop });
-        lines.push({ x1: thumbLeft + 4, y1: thumbTop, x2: thumbLeft + 6, y2: thumbTop + 2 });
-        lines.push({ x1: thumbLeft + 6, y1: thumbTop + 2, x2: thumbLeft + 8, y2: thumbTop + 5 });
+        // Right side of thumb
+        lines.push({ x1: thumbRight, y1: thumbTop + 6, x2: thumbRight, y2: thumbBottom });
         
-        // Back to main body
-        lines.push({ x1: thumbLeft + 8, y1: thumbTop + 5, x2: mainLeft, y2: thumbJoin - 15 });
-        lines.push({ x1: mainLeft, y1: thumbJoin - 15, x2: mainLeft, y2: fingertipStart + 5 });
+        // Thumb bottom
+        lines.push({ x1: thumbRight, y1: thumbBottom, x2: thumbLeft, y2: thumbBottom });
         
-        // Fingertip (curved top)
-        lines.push({ x1: mainLeft, y1: fingertipStart + 5, x2: mainLeft + 3, y2: fingertipStart + 2 });
-        lines.push({ x1: mainLeft + 3, y1: fingertipStart + 2, x2: mainLeft + 6, y2: fingertipStart });
-        const midPoint = (mainLeft + mainRight) / 2;
-        lines.push({ x1: mainLeft + 6, y1: fingertipStart, x2: midPoint, y2: fingertipStart - 2 });
-        lines.push({ x1: midPoint, y1: fingertipStart - 2, x2: mainRight - 6, y2: fingertipStart });
-        lines.push({ x1: mainRight - 6, y1: fingertipStart, x2: mainRight - 3, y2: fingertipStart + 2 });
-        lines.push({ x1: mainRight - 3, y1: fingertipStart + 2, x2: mainRight, y2: fingertipStart + 5 });
+        // === MAIN MITTEN ===
+        const mainLeft = 18;
+        const mainRight = 46;
+        const mainBottom = 68;
+        const mainTop = 5;
+        const midX = (mainLeft + mainRight) / 2;
         
-        // Right side of main mitten
-        lines.push({ x1: mainRight, y1: fingertipStart + 5, x2: mainRight, y2: cuffBottom });
+        // Left side
+        lines.push({ x1: mainLeft, y1: mainBottom, x2: mainLeft, y2: mainTop + 8 });
         
-        // Bottom (cuff)
-        lines.push({ x1: mainRight, y1: cuffBottom, x2: mainLeft, y2: cuffBottom });
+        // Top zigzag (2 peaks with valley)
+        // Left peak
+        lines.push({ x1: mainLeft, y1: mainTop + 8, x2: mainLeft + 3, y2: mainTop + 5 });
+        lines.push({ x1: mainLeft + 3, y1: mainTop + 5, x2: mainLeft + 6, y2: mainTop + 2 });
+        lines.push({ x1: mainLeft + 6, y1: mainTop + 2, x2: mainLeft + 9, y2: mainTop });
+        // Valley
+        lines.push({ x1: mainLeft + 9, y1: mainTop, x2: midX - 2, y2: mainTop + 3 });
+        lines.push({ x1: midX - 2, y1: mainTop + 3, x2: midX + 2, y2: mainTop + 3 });
+        lines.push({ x1: midX + 2, y1: mainTop + 3, x2: mainRight - 9, y2: mainTop });
+        // Right peak
+        lines.push({ x1: mainRight - 9, y1: mainTop, x2: mainRight - 6, y2: mainTop + 2 });
+        lines.push({ x1: mainRight - 6, y1: mainTop + 2, x2: mainRight - 3, y2: mainTop + 5 });
+        lines.push({ x1: mainRight - 3, y1: mainTop + 5, x2: mainRight, y2: mainTop + 8 });
         
-        // Section markers (M labels)
+        // Right side
+        lines.push({ x1: mainRight, y1: mainTop + 8, x2: mainRight, y2: mainBottom });
+        
+        // Bottom
+        lines.push({ x1: mainRight, y1: mainBottom, x2: mainLeft, y2: mainBottom });
+        
+        // === THUMB ATTACHMENT DIAGONAL (inside main mitten) ===
+        const attachTop = 38;
+        const attachBottom = 52;
+        lines.push({ x1: mainLeft + 8, y1: attachTop, x2: mainLeft, y2: attachBottom });
+        lines.push({ x1: mainLeft, y1: attachBottom, x2: mainLeft + 8, y2: attachBottom });
+        lines.push({ x1: mainLeft + 8, y1: attachBottom, x2: mainLeft + 8, y2: attachTop });
+        
+        // M marker
         const markers = [
-            { x: mainLeft - 3, y: thumbJoin + 5, label: 'M' }
+            { x: mainLeft + 4, y: attachBottom + 3, label: 'M' }
         ];
         
-        return { lines, markers, thumbArea: { left: thumbLeft, top: thumbTop, right: thumbLeft + 8, bottom: thumbJoin } };
+        return { lines, markers };
     }
     
     /**
      * Create damevante (women's mitten) outline
-     * Based on page 394 "Din egen damevante"
+     * Based on "Din egen damevante" - precise pixel-perfect outline
      */
     createWomenMittenOutline() {
-        const w = 60, h = 80;
         const lines = [];
         
-        // Main dimensions
-        const mainLeft = 15;
-        const mainRight = 45;
-        const cuffBottom = h - 2;
-        const cuffTop = h - 18;
-        const thumbJoin = h - 30;
-        const fingertipStart = 10;
+        // === THUMB (left side) ===
+        const thumbLeft = 3;
+        const thumbRight = 17;
+        const thumbBottom = 60;
+        const thumbTop = 32;
         
-        // Left side of main mitten (from cuff up)
-        lines.push({ x1: mainLeft, y1: cuffBottom, x2: mainLeft, y2: thumbJoin });
+        // Left side of thumb
+        lines.push({ x1: thumbLeft, y1: thumbBottom, x2: thumbLeft, y2: thumbTop + 7 });
         
-        // Thumb gusset (left side)
-        const thumbLeft = 5;
-        const thumbTop = thumbJoin - 22;
-        lines.push({ x1: mainLeft, y1: thumbJoin, x2: thumbLeft + 2, y2: thumbJoin - 6 });
-        lines.push({ x1: thumbLeft + 2, y1: thumbJoin - 6, x2: thumbLeft, y2: thumbJoin - 10 });
-        lines.push({ x1: thumbLeft, y1: thumbJoin - 10, x2: thumbLeft, y2: thumbTop + 6 });
+        // Thumb top zigzag (W shape)
+        lines.push({ x1: thumbLeft, y1: thumbTop + 7, x2: thumbLeft + 3, y2: thumbTop + 4 });
+        lines.push({ x1: thumbLeft + 3, y1: thumbTop + 4, x2: thumbLeft + 5, y2: thumbTop + 2 });
+        lines.push({ x1: thumbLeft + 5, y1: thumbTop + 2, x2: thumbLeft + 7, y2: thumbTop });
+        lines.push({ x1: thumbLeft + 7, y1: thumbTop, x2: thumbLeft + 9, y2: thumbTop + 2 });
+        lines.push({ x1: thumbLeft + 9, y1: thumbTop + 2, x2: thumbLeft + 11, y2: thumbTop + 4 });
+        lines.push({ x1: thumbLeft + 11, y1: thumbTop + 4, x2: thumbRight, y2: thumbTop + 7 });
         
-        // Thumb top (curved with characteristic points)
-        lines.push({ x1: thumbLeft, y1: thumbTop + 6, x2: thumbLeft + 2, y2: thumbTop + 3 });
-        lines.push({ x1: thumbLeft + 2, y1: thumbTop + 3, x2: thumbLeft + 4, y2: thumbTop + 1 });
-        lines.push({ x1: thumbLeft + 4, y1: thumbTop + 1, x2: thumbLeft + 6, y2: thumbTop });
-        lines.push({ x1: thumbLeft + 6, y1: thumbTop, x2: thumbLeft + 8, y2: thumbTop + 1 });
-        lines.push({ x1: thumbLeft + 8, y1: thumbTop + 1, x2: thumbLeft + 10, y2: thumbTop + 3 });
-        lines.push({ x1: thumbLeft + 10, y1: thumbTop + 3, x2: thumbLeft + 12, y2: thumbTop + 6 });
+        // Right side of thumb
+        lines.push({ x1: thumbRight, y1: thumbTop + 7, x2: thumbRight, y2: thumbBottom });
         
-        // Back to main body
-        lines.push({ x1: thumbLeft + 12, y1: thumbTop + 6, x2: mainLeft, y2: thumbJoin - 18 });
-        lines.push({ x1: mainLeft, y1: thumbJoin - 18, x2: mainLeft, y2: fingertipStart + 6 });
+        // Thumb bottom
+        lines.push({ x1: thumbRight, y1: thumbBottom, x2: thumbLeft, y2: thumbBottom });
         
-        // Fingertip (curved top with characteristic Selbu shape)
-        lines.push({ x1: mainLeft, y1: fingertipStart + 6, x2: mainLeft + 3, y2: fingertipStart + 3 });
-        lines.push({ x1: mainLeft + 3, y1: fingertipStart + 3, x2: mainLeft + 6, y2: fingertipStart + 1 });
-        lines.push({ x1: mainLeft + 6, y1: fingertipStart + 1, x2: mainLeft + 9, y2: fingertipStart });
-        
+        // === MAIN MITTEN ===
+        const mainLeft = 21;
+        const mainRight = 53;
+        const mainBottom = 83;
+        const mainTop = 5;
         const midX = (mainLeft + mainRight) / 2;
-        lines.push({ x1: mainLeft + 9, y1: fingertipStart, x2: midX, y2: fingertipStart - 2 });
-        lines.push({ x1: midX, y1: fingertipStart - 2, x2: mainRight - 9, y2: fingertipStart });
         
-        lines.push({ x1: mainRight - 9, y1: fingertipStart, x2: mainRight - 6, y2: fingertipStart + 1 });
-        lines.push({ x1: mainRight - 6, y1: fingertipStart + 1, x2: mainRight - 3, y2: fingertipStart + 3 });
-        lines.push({ x1: mainRight - 3, y1: fingertipStart + 3, x2: mainRight, y2: fingertipStart + 6 });
+        // Left side
+        lines.push({ x1: mainLeft, y1: mainBottom, x2: mainLeft, y2: mainTop + 10 });
         
-        // Right side of main mitten
-        lines.push({ x1: mainRight, y1: fingertipStart + 6, x2: mainRight, y2: cuffBottom });
+        // Top zigzag (2 peaks with valley)
+        // Left peak
+        lines.push({ x1: mainLeft, y1: mainTop + 10, x2: mainLeft + 4, y2: mainTop + 6 });
+        lines.push({ x1: mainLeft + 4, y1: mainTop + 6, x2: mainLeft + 7, y2: mainTop + 3 });
+        lines.push({ x1: mainLeft + 7, y1: mainTop + 3, x2: mainLeft + 10, y2: mainTop });
+        // Valley
+        lines.push({ x1: mainLeft + 10, y1: mainTop, x2: midX - 3, y2: mainTop + 4 });
+        lines.push({ x1: midX - 3, y1: mainTop + 4, x2: midX + 3, y2: mainTop + 4 });
+        lines.push({ x1: midX + 3, y1: mainTop + 4, x2: mainRight - 10, y2: mainTop });
+        // Right peak
+        lines.push({ x1: mainRight - 10, y1: mainTop, x2: mainRight - 7, y2: mainTop + 3 });
+        lines.push({ x1: mainRight - 7, y1: mainTop + 3, x2: mainRight - 4, y2: mainTop + 6 });
+        lines.push({ x1: mainRight - 4, y1: mainTop + 6, x2: mainRight, y2: mainTop + 10 });
         
-        // Bottom (cuff)
-        lines.push({ x1: mainRight, y1: cuffBottom, x2: mainLeft, y2: cuffBottom });
+        // Right side
+        lines.push({ x1: mainRight, y1: mainTop + 10, x2: mainRight, y2: mainBottom });
         
-        // Section markers
+        // Bottom
+        lines.push({ x1: mainRight, y1: mainBottom, x2: mainLeft, y2: mainBottom });
+        
+        // === THUMB ATTACHMENT (inside main mitten) ===
+        const attachTop = 45;
+        const attachBottom = 62;
+        lines.push({ x1: mainLeft + 10, y1: attachTop, x2: mainLeft, y2: attachBottom });
+        lines.push({ x1: mainLeft, y1: attachBottom, x2: mainLeft + 10, y2: attachBottom });
+        lines.push({ x1: mainLeft + 10, y1: attachBottom, x2: mainLeft + 10, y2: attachTop });
+        
+        // M markers
         const markers = [
-            { x: mainLeft - 4, y: thumbJoin + 8, label: 'M' },
-            { x: thumbLeft + 3, y: thumbJoin - 2, label: 'M' }
+            { x: mainLeft + 5, y: attachBottom + 4, label: 'M' },
+            { x: thumbLeft + 7, y: thumbBottom + 3, label: 'M' }
         ];
         
-        return { lines, markers, thumbArea: { left: thumbLeft, top: thumbTop, right: thumbLeft + 12, bottom: thumbJoin } };
+        return { lines, markers };
     }
     
     /**
      * Create herrevante (men's mitten) outline
-     * Based on page 395 "Din egen herrevante"
+     * Based on "Din egen herrevante" - precise pixel-perfect outline
      */
     createMenMittenOutline() {
-        const w = 65, h = 90;
         const lines = [];
         
-        // Main dimensions (larger than dame)
-        const mainLeft = 16;
-        const mainRight = 49;
-        const cuffBottom = h - 2;
-        const cuffTop = h - 20;
-        const thumbJoin = h - 35;
-        const fingertipStart = 10;
+        // === THUMB (left side) ===
+        const thumbLeft = 3;
+        const thumbRight = 19;
+        const thumbBottom = 68;
+        const thumbTop = 36;
         
-        // Left side of main mitten
-        lines.push({ x1: mainLeft, y1: cuffBottom, x2: mainLeft, y2: thumbJoin });
+        // Left side of thumb
+        lines.push({ x1: thumbLeft, y1: thumbBottom, x2: thumbLeft, y2: thumbTop + 8 });
         
-        // Thumb gusset (left side) - larger for men
-        const thumbLeft = 4;
-        const thumbTop = thumbJoin - 26;
-        lines.push({ x1: mainLeft, y1: thumbJoin, x2: thumbLeft + 3, y2: thumbJoin - 7 });
-        lines.push({ x1: thumbLeft + 3, y1: thumbJoin - 7, x2: thumbLeft, y2: thumbJoin - 12 });
-        lines.push({ x1: thumbLeft, y1: thumbJoin - 12, x2: thumbLeft, y2: thumbTop + 7 });
+        // Thumb top zigzag (W shape)
+        lines.push({ x1: thumbLeft, y1: thumbTop + 8, x2: thumbLeft + 3, y2: thumbTop + 5 });
+        lines.push({ x1: thumbLeft + 3, y1: thumbTop + 5, x2: thumbLeft + 6, y2: thumbTop + 2 });
+        lines.push({ x1: thumbLeft + 6, y1: thumbTop + 2, x2: thumbLeft + 8, y2: thumbTop });
+        lines.push({ x1: thumbLeft + 8, y1: thumbTop, x2: thumbLeft + 10, y2: thumbTop + 2 });
+        lines.push({ x1: thumbLeft + 10, y1: thumbTop + 2, x2: thumbLeft + 13, y2: thumbTop + 5 });
+        lines.push({ x1: thumbLeft + 13, y1: thumbTop + 5, x2: thumbRight, y2: thumbTop + 8 });
         
-        // Thumb top (curved)
-        lines.push({ x1: thumbLeft, y1: thumbTop + 7, x2: thumbLeft + 2, y2: thumbTop + 4 });
-        lines.push({ x1: thumbLeft + 2, y1: thumbTop + 4, x2: thumbLeft + 5, y2: thumbTop + 2 });
-        lines.push({ x1: thumbLeft + 5, y1: thumbTop + 2, x2: thumbLeft + 7, y2: thumbTop });
-        lines.push({ x1: thumbLeft + 7, y1: thumbTop, x2: thumbLeft + 9, y2: thumbTop + 2 });
-        lines.push({ x1: thumbLeft + 9, y1: thumbTop + 2, x2: thumbLeft + 12, y2: thumbTop + 4 });
-        lines.push({ x1: thumbLeft + 12, y1: thumbTop + 4, x2: thumbLeft + 14, y2: thumbTop + 7 });
+        // Right side of thumb
+        lines.push({ x1: thumbRight, y1: thumbTop + 8, x2: thumbRight, y2: thumbBottom });
         
-        // Back to main body
-        lines.push({ x1: thumbLeft + 14, y1: thumbTop + 7, x2: mainLeft, y2: thumbJoin - 20 });
-        lines.push({ x1: mainLeft, y1: thumbJoin - 20, x2: mainLeft, y2: fingertipStart + 7 });
+        // Thumb bottom
+        lines.push({ x1: thumbRight, y1: thumbBottom, x2: thumbLeft, y2: thumbBottom });
         
-        // Fingertip (larger curved top)
-        lines.push({ x1: mainLeft, y1: fingertipStart + 7, x2: mainLeft + 4, y2: fingertipStart + 4 });
-        lines.push({ x1: mainLeft + 4, y1: fingertipStart + 4, x2: mainLeft + 8, y2: fingertipStart + 2 });
-        lines.push({ x1: mainLeft + 8, y1: fingertipStart + 2, x2: mainLeft + 11, y2: fingertipStart });
-        
+        // === MAIN MITTEN ===
+        const mainLeft = 24;
+        const mainRight = 60;
+        const mainBottom = 93;
+        const mainTop = 5;
         const midX = (mainLeft + mainRight) / 2;
-        lines.push({ x1: mainLeft + 11, y1: fingertipStart, x2: midX, y2: fingertipStart - 3 });
-        lines.push({ x1: midX, y1: fingertipStart - 3, x2: mainRight - 11, y2: fingertipStart });
         
-        lines.push({ x1: mainRight - 11, y1: fingertipStart, x2: mainRight - 8, y2: fingertipStart + 2 });
-        lines.push({ x1: mainRight - 8, y1: fingertipStart + 2, x2: mainRight - 4, y2: fingertipStart + 4 });
-        lines.push({ x1: mainRight - 4, y1: fingertipStart + 4, x2: mainRight, y2: fingertipStart + 7 });
+        // Left side
+        lines.push({ x1: mainLeft, y1: mainBottom, x2: mainLeft, y2: mainTop + 12 });
         
-        // Right side of main mitten
-        lines.push({ x1: mainRight, y1: fingertipStart + 7, x2: mainRight, y2: cuffBottom });
+        // Top zigzag (2 peaks with valley)
+        // Left peak
+        lines.push({ x1: mainLeft, y1: mainTop + 12, x2: mainLeft + 4, y2: mainTop + 8 });
+        lines.push({ x1: mainLeft + 4, y1: mainTop + 8, x2: mainLeft + 8, y2: mainTop + 4 });
+        lines.push({ x1: mainLeft + 8, y1: mainTop + 4, x2: mainLeft + 12, y2: mainTop });
+        // Valley
+        lines.push({ x1: mainLeft + 12, y1: mainTop, x2: midX - 3, y2: mainTop + 5 });
+        lines.push({ x1: midX - 3, y1: mainTop + 5, x2: midX + 3, y2: mainTop + 5 });
+        lines.push({ x1: midX + 3, y1: mainTop + 5, x2: mainRight - 12, y2: mainTop });
+        // Right peak
+        lines.push({ x1: mainRight - 12, y1: mainTop, x2: mainRight - 8, y2: mainTop + 4 });
+        lines.push({ x1: mainRight - 8, y1: mainTop + 4, x2: mainRight - 4, y2: mainTop + 8 });
+        lines.push({ x1: mainRight - 4, y1: mainTop + 8, x2: mainRight, y2: mainTop + 12 });
         
-        // Bottom (cuff)
-        lines.push({ x1: mainRight, y1: cuffBottom, x2: mainLeft, y2: cuffBottom });
+        // Right side
+        lines.push({ x1: mainRight, y1: mainTop + 12, x2: mainRight, y2: mainBottom });
         
-        // Section markers
+        // Bottom
+        lines.push({ x1: mainRight, y1: mainBottom, x2: mainLeft, y2: mainBottom });
+        
+        // === THUMB ATTACHMENT (inside main mitten) ===
+        const attachTop = 50;
+        const attachBottom = 70;
+        lines.push({ x1: mainLeft + 12, y1: attachTop, x2: mainLeft, y2: attachBottom });
+        lines.push({ x1: mainLeft, y1: attachBottom, x2: mainLeft + 12, y2: attachBottom });
+        lines.push({ x1: mainLeft + 12, y1: attachBottom, x2: mainLeft + 12, y2: attachTop });
+        
+        // M markers
         const markers = [
-            { x: mainLeft - 4, y: thumbJoin + 10, label: 'M' },
-            { x: thumbLeft + 4, y: thumbJoin - 3, label: 'M' }
+            { x: mainLeft + 6, y: attachBottom + 4, label: 'M' },
+            { x: thumbLeft + 8, y: thumbBottom + 3, label: 'M' }
         ];
         
-        return { lines, markers, thumbArea: { left: thumbLeft, top: thumbTop, right: thumbLeft + 14, bottom: thumbJoin } };
+        return { lines, markers };
     }
     
     /**
