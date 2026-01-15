@@ -12,6 +12,13 @@ class PatternManager {
         
         // Initialize IndexedDB
         this.initDB();
+
+                // Persistence adapters
+                try {
+                    this.localAdapter = new LocalStorageAdapter('vantetegner_models');
+                } catch (e) {
+                    this.localAdapter = null;
+                }
     }
     
     /**
@@ -301,6 +308,40 @@ class PatternManager {
         link.click();
         
         URL.revokeObjectURL(url);
+    }
+
+    /**
+     * Export MittenModel (or plain object) using FileAdapter
+     */
+    exportModelAsFile(modelObj, filename = 'vantetegner-model'){
+        try{
+            if (window.FileAdapter) FileAdapter.exportJSON(modelObj, filename);
+            else this.exportAsJSON(modelObj, filename);
+        }catch(e){ console.error('exportModelAsFile', e); }
+    }
+
+    /**
+     * Import model from file (returns parsed object)
+     */
+    async importModelFromFile(file){
+        if (window.FileAdapter) return FileAdapter.importJSON(file);
+        return this.importFromJSON(file);
+    }
+
+    /**
+     * Save serialized model to localStorage via adapter
+     */
+    saveModelToLocal(id, modelObj){
+        if (!this.localAdapter) return false;
+        try{ return this.localAdapter.save(id, modelObj); }catch(e){ return false; }
+    }
+
+    /**
+     * Load serialized model from localStorage adapter
+     */
+    loadModelFromLocal(id){
+        if (!this.localAdapter) return null;
+        return this.localAdapter.load(id);
     }
     
     /**

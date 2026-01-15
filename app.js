@@ -120,6 +120,26 @@ class VanteTegnerApp {
         document.getElementById('exportPng').addEventListener('click', () => {
             this.exportPNG();
         });
+
+        // Export model JSON
+        const exportModelBtn = document.getElementById('exportModel');
+        if (exportModelBtn) {
+            exportModelBtn.addEventListener('click', () => {
+                try {
+                    const modelObj = this.canvas.getPatternData();
+                    // Add metadata for portability
+                    const payload = {
+                        metadata: { name: 'exported-pattern', exportedAt: new Date().toISOString() },
+                        model: modelObj
+                    };
+                    this.patternManager.exportModelAsFile(payload, 'vantetegner-model');
+                    this.showToast('Model eksporteret', 'success');
+                } catch (e) {
+                    console.error('Export model error', e);
+                    this.showToast('Kunne ikke eksportere model', 'error');
+                }
+            });
+        }
         
         document.getElementById('loadPattern').addEventListener('click', () => {
             this.showLoadDialog();
